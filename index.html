@@ -2592,7 +2592,7 @@
  title: `${isPre ? 'Pre-HD' : 'Post-HD'} Level: ${lvl.numVal} mcg/mL`,
  detail: needsSupp
  ? `Below ${cutoff} mcg/mL → Administer 500 mg supplemental dose post-HD today`
- : `≥ ${cutoff} mcg/mL → No supplemental dose needed; proceed to maintenance`
+ : `≥ ${cutoff} mcg/mL → No supplemental dose needed; start maintenance on next HD day`
  });
 
  if (needsSupp && day.isHd) {
@@ -2600,6 +2600,12 @@
  type: 'supp',
  title: 'Supplemental: 500 mg × 1',
  detail: 'Administer post-HD today; start maintenance on next HD day'
+ });
+ } else if (scenario === 'C' && day.isHd) {
+ day.events.push({
+ type: 'screen-skip',
+ title: 'No Supplemental Dose Needed',
+ detail: 'Level ≥ 25 mcg/mL — begin 1st maintenance dose after next HD session.'
  });
  }
  } else {
@@ -2681,12 +2687,12 @@
  day.events.push({
  type: 'pre-lab',
  title: 'Pre-HD AM Random Level',
- detail: 'Draw with AM labs prior to HD. If < 25 mcg/mL → give 500 mg post-HD.'
+ detail: 'Draw with AM labs prior to HD. If < 25 mcg/mL → give 500 mg post-HD; if ≥ 25 mcg/mL → start maintenance next HD.'
  });
  day.events.push({
  type: 'supp',
  title: 'Conditional: 500 mg Post-HD',
- detail: 'Give 500 mg × 1 after HD ONLY if Pre-HD AM level is < 25 mcg/mL.'
+ detail: 'Give 500 mg × 1 after HD ONLY if Pre-HD AM level is < 25 mcg/mL (otherwise start maintenance next HD).'
  });
  if (firstScheduledLabText === '—') {
  firstScheduledLabText = `${formatFriendlyDate(day.date)} (Pre-HD AM)`;
@@ -2703,8 +2709,8 @@
  screeningDone = true;
  }
 
- // If a supplemental 500 mg was just given on this day, maintenance starts on the NEXT HD day
- if (day.events.some(e => e.type === 'supp')) {
+ // If a supplemental 500 mg was given OR Option C screening level was ≥ 25 mcg/mL today, maintenance starts on the NEXT HD day
+ if (day.events.some(e => e.type === 'supp' || e.type === 'screen-skip')) {
  continue;
  }
 
@@ -2855,6 +2861,7 @@
  let badgeClass = 'bg-slate-100 border-slate-300 text-slate-800';
  if (ev.type === 'ld') badgeClass = 'bg-emerald-600 border-emerald-700 text-white';
  else if (ev.type === 'supp') badgeClass = 'bg-teal-50 border-teal-400 text-teal-950';
+ else if (ev.type === 'screen-skip') badgeClass = 'bg-sky-50 border-sky-300 text-sky-950';
  else if (ev.type === 'maint') badgeClass = 'bg-emerald-50 border-emerald-300 text-emerald-950';
  else if (ev.type === 'hold') badgeClass = 'bg-rose-100 border-rose-400 text-rose-950';
  else if (ev.type === 'pre-lab') badgeClass = 'bg-amber-100 border-amber-400 text-amber-950';
