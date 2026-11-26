@@ -3643,993 +3643,1038 @@
  <template id="raw-code-levels"><!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>Vancomycin: Dose by Level — PSH Clinical Guidance & Calculator</title>
- <script src="https://cdn.tailwindcss.com"></script>
- <link rel="preconnect" href="https://fonts.googleapis.com" />
- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
- <style>
- body {
- font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
- }
- ::-webkit-scrollbar {
- width: 6px;
- height: 6px;
- }
- ::-webkit-scrollbar-track {
- background: transparent;
- }
- ::-webkit-scrollbar-thumb {
- background: rgba(100, 116, 139, 0.35);
- border-radius: 9999px;
- }
- </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vancomycin: Dose by Level — PSH Clinical Guidance & Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.35);
+      border-radius: 9999px;
+    }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen antialiased selection:bg-blue-600 selection:text-white">
 
- <!-- Top Header Banner (Penn State Health Navy Theme) -->
- <header class="bg-[#001E44] text-white border-b border-blue-900/60 shadow-md sticky top-0 z-30">
- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
- <div class="flex items-center gap-3">
- <div class="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center shrink-0">
- <svg class="w-5 h-5 text-blue-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
- <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
- </svg>
- </div>
- <div>
- <h1 class="text-base sm:text-lg font-extrabold tracking-tight leading-tight">Vancomycin: Dose by Level</h1>
- <p class="text-xs text-blue-200/90">PSH Step 3b Clinical Guidance • AKI / Unstable Renal Function</p>
- </div>
- </div>
-
- <!-- Encounter Mode Switcher & Reset Patient -->
- <div class="flex flex-wrap items-center gap-2 self-start sm:self-auto">
- <div class="flex items-center bg-slate-900/60 p-1 rounded-xl border border-blue-400/20">
- <button id="btnModeInitial" type="button" onclick="setEncounterMode('initial')"
- class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-sm">
- New Start (Initial)
- </button>
- <button id="btnModeFollowup" type="button" onclick="setEncounterMode('followup')"
- class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-blue-200 hover:text-white">
- Follow-Up (Level Check)
- </button>
- </div>
- <button type="button" onclick="resetForm()"
- class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-blue-300/30 transition-all active:scale-95">
- <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
- <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
- </svg>
- Reset Patient
- </button>
- </div>
- </div>
- </header>
-
- <!-- Main Workspace -->
- <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
- <!-- Clinical Alert Banner -->
- <div class="mb-6 rounded-2xl bg-amber-50 border border-amber-200/90 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
- <div class="flex items-start gap-3">
- <div class="p-2 rounded-xl bg-amber-100 text-amber-700 shrink-0 mt-0.5">
- <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
- <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
- </svg>
- </div>
- <div>
- <h2 class="text-sm font-bold text-amber-950">EPIC Order Requirement: Vancomycin (Dosed by Levels) Placeholder</h2>
- <p class="text-xs text-amber-800 mt-0.5 leading-relaxed">
- In <span class="font-semibold">RXVANC</span> (Database tab), ensure <span class="font-semibold underline">vancomycin (dosed by levels) placeholder</span> is ordered alongside any one-time dose. If patient developed AKI on scheduled therapy, hold future doses and stop any active infusion immediately.
- </p>
- </div>
- </div>
- <span class="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-amber-200/70 text-amber-900 shrink-0 self-start sm:self-center">
- Bayesian (DoseMeRx) Not Reliable in AKI
- </span>
- </div>
-
- <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
- <!-- LEFT COLUMN: PATIENT INPUTS & CLINICAL PARAMETERS (5 cols) -->
- <div class="lg:col-span-5 space-y-5">
-
- <!-- Card 1: Patient Demographics & Renal Parameters -->
- <section class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
- <div class="px-5 py-3.5 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between">
- <div class="flex items-center gap-2">
- <span class="w-6 h-6 rounded-lg bg-[#001E44] text-white text-xs font-bold flex items-center justify-center">1</span>
- <h2 class="text-sm font-bold text-slate-800">Patient Demographics &amp; Renal Status</h2>
- </div>
- <button type="button" onclick="resetForm()" class="text-xs font-semibold text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2.5 py-1 rounded-lg transition-colors">
- Reset Patient
- </button>
- </div>
-
- <div class="p-5 space-y-4">
- <!-- Weight, Height -->
- <div class="grid grid-cols-2 gap-3">
- <div>
- <label class="block text-xs font-semibold text-slate-700 mb-1">Actual Body Weight (kg)</label>
- <input id="weightKg" type="number" step="0.1" min="20" max="400" placeholder="e.g., 85" oninput="recalculateAll()"
- class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-900 placeholder:font-normal placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" />
- </div>
- <div>
- <label class="block text-xs font-semibold text-slate-700 mb-1">Height (cm)</label>
- <input id="heightCm" type="number" step="1" min="100" max="250" placeholder="e.g., 175" oninput="recalculateAll()"
- class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" />
- </div>
- </div>
-
- <!-- Age, Sex, SCr -->
- <div class="grid grid-cols-3 gap-3">
- <div>
- <label class="block text-xs font-semibold text-slate-700 mb-1">Age (yrs)</label>
- <input id="ageYrs" type="number" min="18" max="115" placeholder="e.g., 64" oninput="recalculateAll()"
- class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" />
- </div>
- <div>
- <label class="block text-xs font-semibold text-slate-700 mb-1">Sex</label>
- <select id="sex" onchange="recalculateAll()"
- class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
- <option value="">Select...</option>
- <option value="M">Male</option>
- <option value="F">Female</option>
- </select>
- </div>
- <div>
- <label class="block text-xs font-semibold text-slate-700 mb-1">SCr (mg/dL)</label>
- <input id="scr" type="number" step="0.01" min="0.2" max="15" placeholder="e.g., 2.1" oninput="recalculateAll()"
- class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" />
- </div>
- </div>
-
- <!-- Auto-calculated Demographic Summary Pill Bar -->
- <div class="grid grid-cols-3 gap-2 pt-1">
- <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-2.5 text-center">
- <div class="text-[11px] font-medium text-slate-500">BMI</div>
- <div id="dispBmi" class="text-sm font-bold text-slate-800 mt-0.5">--</div>
- </div>
- <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-2.5 text-center">
- <div class="text-[11px] font-medium text-slate-500">IBW / AdjBW</div>
- <div id="dispIbw" class="text-xs font-bold text-slate-800 mt-1">--</div>
- </div>
- <div class="rounded-xl bg-blue-50/80 border border-blue-200/80 p-2.5 text-center">
- <div class="text-[11px] font-medium text-blue-700">Est. CrCl (CG)</div>
- <div id="dispCrCl" class="text-sm font-bold text-blue-900 mt-0.5">--</div>
- </div>
- </div>
-
- <!-- Clinical Reason for Dose by Level -->
- <div>
- <label class="block text-xs font-semibold text-slate-700 mb-1">Clinical Scenario / Renal Instability Trigger</label>
- <select id="akiContext" onchange="recalculateAll()"
- class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
- <option value="aki_new">Acute Kidney Injury (AKI) / Fluctuating SCr or Urine Output</option>
- <option value="aki_transition">Developed AKI During Scheduled Vancomycin (Hold &amp; Transition)</option>
- <option value="esrd_nondialysis">ESRD / Severe CKD Not Yet on Dialysis</option>
- <option value="hemodynamic">Hemodynamic Instability / Rapidly Changing Renal Function</option>
- </select>
- </div>
- </div>
- </section>
-
- <!-- Card 2A: INITIAL DOSING & LAB TIMING (Visible in Initial Mode) -->
- <section id="panelInitialInputs" class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
- <div class="px-5 py-3.5 bg-slate-50/80 border-b border-slate-200/80 flex items-center gap-2">
- <span class="w-6 h-6 rounded-lg bg-blue-600 text-white text-xs font-bold flex items-center justify-center">2</span>
- <h2 class="text-sm font-bold text-slate-800">Initial Dose &amp; Level Timing Setup</h2>
- </div>
-
- <div class="p-5 space-y-4">
- <!-- Loading Dose Indicated Toggle -->
- <div>
- <label class="block text-xs font-semibold text-slate-700 mb-1.5">Is a Loading Dose (LD) Indicated?</label>
- <div class="grid grid-cols-2 gap-2.5">
- <button id="btnLdYes" type="button" onclick="setLdIndicated(true)"
- class="p-3 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition-all">
- <div class="text-xs font-bold text-blue-900">YES — Modified LD (AKI)</div>
- <div class="text-[11px] text-blue-700 mt-0.5">~20–25 mg/kg Table (Max 3000 mg)</div>
- </button>
- <button id="btnLdNo" type="button" onclick="setLdIndicated(false)"
- class="p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition-all">
- <div class="text-xs font-bold text-slate-800">NO — No Load</div>
- <div class="text-[11px] text-slate-500 mt-0.5">15 mg/kg × 1 (Max 2000 mg)</div>
- </button>
- </div>
- <p class="text-[11px] text-slate-500 mt-1.5 leading-snug">
- <span class="font-semibold text-slate-700">PSH LD Criteria:</span> ICU, Sepsis, Bacteremia, CNS/Meningitis, Endovascular, Pneumonia, Necrotizing infection, Osteomyelitis.
- </p>
- </div>
-
- <!-- Target mg/kg selector when LD = Yes -->
- <div id="ldTargetWrapper" class="bg-slate-50 rounded-xl p-3 border border-slate-200/80">
- <div class="flex items-center justify-between mb-1.5">
- <label class="text-xs font-semibold text-slate-700">Loading Dose Tier (PSH Step 1 Table)</label>
- <span id="ldTargetBadge" class="text-xs font-bold text-blue-700">Modified (~20–25 mg/kg)</span>
- </div>
- <div class="grid grid-cols-2 gap-2">
- <button id="btnLdModified" type="button" onclick="setLdTier('modified')"
- class="py-1.5 px-3 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-sm">
- Modified LD (AKI / CrCl &lt;30)
- </button>
- <button id="btnLdStandard" type="button" onclick="setLdTier('standard')"
- class="py-1.5 px-3 rounded-lg text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-100">
- Standard LD (~25 mg/kg)
- </button>
- </div>
- <p class="text-[11px] text-slate-500 mt-1.5 leading-snug">
- Per PSH Step 1, <span class="font-semibold text-slate-700">Modified LD</span> applies to AKI, CrCl &lt; 30 mL/min, Obese (BMI ≥ 30), HD, or emergent unavailable SCr.
- </p>
- </div>
-
- <!-- Administration Date & Time (to auto-determine AM labs vs Timed 12h/24h lab) -->
- <div class="pt-1 border-t border-slate-100">
- <label class="block text-xs font-semibold text-slate-700 mb-1.5">Planned / Actual Dose Administration Date &amp; Time</label>
- <div class="grid grid-cols-2 gap-3">
- <div>
- <span class="block text-[11px] text-slate-500 mb-1">Admin Date</span>
- <input id="initDoseDate" type="date" onchange="recalculateAll()"
- class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600" />
- </div>
- <div>
- <span class="block text-[11px] text-slate-500 mb-1">Infusion Start Time</span>
- <input id="initDoseTime" type="time" value="14:00" onchange="recalculateAll()"
- class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600" />
- </div>
- </div>
-
- <!-- Quick Time Presets -->
- <div class="flex flex-wrap items-center gap-1.5 mt-2">
- <span class="text-[11px] text-slate-500 mr-1">Quick test:</span>
- <button type="button" onclick="setInitPresetTime('10:00')" class="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">10:00 AM (Daytime)</button>
- <button type="button" onclick="setInitPresetTime('18:00')" class="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">6:00 PM (Evening)</button>
- <button type="button" onclick="setInitPresetTime('23:30')" class="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">11:30 PM (Late Night)</button>
- </div>
- </div>
-
- <!-- Override Lab Draw Strategy -->
- <div>
- <label class="block text-xs font-semibold text-slate-700 mb-1">Level Ordering Strategy</label>
- <select id="labTimingStrategy" onchange="recalculateAll()"
- class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
- <option value="auto">Auto-Select Based on Dose Time &amp; CrCl (Recommended)</option>
- <option value="am_next">Random Level with AM Labs Next Day</option>
- <option value="timed_12h">Timed Level — 12 Hours Post-Dose</option>
- <option value="timed_24h">Timed Level — 24 Hours Post-Dose</option>
- </select>
- </div>
- </div>
- </section>
-
- <!-- Card 2B: FOLLOW-UP LEVEL ASSESSMENT (Visible in Follow-Up Mode) -->
- <section id="panelFollowupInputs" class="hidden bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
- <div class="px-5 py-3.5 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between">
- <div class="flex items-center gap-2">
- <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">2</span>
- <h2 class="text-sm font-bold text-slate-800">Follow-Up Level &amp; Last Dose Timing</h2>
- </div>
- <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">Threshold: 18 mcg/mL</span>
- </div>
-
- <div class="p-5 space-y-4">
- <!-- Random Vancomycin Level Result -->
- <div>
- <label class="block text-xs font-semibold text-slate-700 mb-1">Resulted Vancomycin Random Level (mcg/mL)</label>
- <div class="relative">
- <input id="randomLevel" type="number" step="0.1" min="0" max="100" placeholder="e.g., 14.2" oninput="recalculateAll()"
- class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base font-bold text-slate-900 placeholder:font-normal placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" />
- <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400">mcg/mL</span>
- </div>
- <!-- Quick Level Presets -->
- <div class="flex flex-wrap gap-1.5 mt-2">
- <button type="button" onclick="setFollowupLevel(21.4)" class="text-[11px] px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-semibold">21.4 (≥ 18 Hold)</button>
- <button type="button" onclick="setFollowupLevel(14.2)" class="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-semibold">14.2 (&lt; 18 Re-dose)</button>
- <button type="button" onclick="setFollowupLevel(9.5)" class="text-[11px] px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 font-semibold">9.5 (&lt; 18 Low)</button>
- </div>
- </div>
-
- <!-- Date & Time Calculator for Last Dose vs Level Draw -->
- <div id="elapsedTimeBox" class="rounded-xl bg-slate-50 border border-slate-200/90 p-3.5 space-y-3">
- <div class="flex items-center justify-between">
- <span class="text-xs font-bold text-slate-800">Time Elapsed: Last Dose → Level Draw</span>
- <span id="elapsedHoursBadge" class="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800">
- 16.0 hrs
- </span>
- </div>
-
- <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
- <div>
- <label class="block text-[11px] font-semibold text-slate-600 mb-1">Last Vancomycin Dose Given</label>
- <input id="lastDoseDateTime" type="datetime-local" onchange="recalculateAll()"
- class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
- </div>
- <div>
- <label class="block text-[11px] font-semibold text-slate-600 mb-1">Level Drawn Date &amp; Time</label>
- <input id="levelDrawDateTime" type="datetime-local" onchange="recalculateAll()"
- class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
- </div>
- </div>
-
- <!-- Quick Elapsed Time Helpers -->
- <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
- <span class="text-[11px] text-slate-500">Quick window:</span>
- <button type="button" onclick="setElapsedHoursPreset(16)" class="text-[11px] px-2 py-0.5 rounded bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-medium">16h ago (&lt; 24h → 15 mg/kg)</button>
- <button type="button" onclick="setElapsedHoursPreset(28)" class="text-[11px] px-2 py-0.5 rounded bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-medium">28h ago (≥ 24h → 10 mg/kg)</button>
- </div>
- </div>
-
- <!-- Re-Dose Strategy Override (Auto vs Force 15 mg/kg vs Force 10 mg/kg) -->
- <div id="followupDoseOverrideWrapper">
- <label class="block text-xs font-semibold text-slate-700 mb-1">Re-Dose Regimen Strategy (When Level &lt; 18 mcg/mL)</label>
- <select id="followupDoseOverride" onchange="recalculateAll()"
- class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600">
- <option value="auto">Auto-Select Based on Elapsed Time (&lt; 24h → 15 mg/kg | ≥ 24h → 10 mg/kg)</option>
- <option value="force_15">Force 15 mg/kg × 1 (Clinical Override)</option>
- <option value="force_10">Force 10 mg/kg × 1 (Clinical Override)</option>
- </select>
- </div>
-
- <!-- Next Level Timing Option for Follow-Up -->
- <div>
- <label class="block text-xs font-semibold text-slate-700 mb-1">Next Follow-Up Lab Schedule</label>
- <select id="followupNextLabMode" onchange="recalculateAll()"
- class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600">
- <option value="am_next">Random Level with Next AM Labs (Standard PSH Step 3b)</option>
- <option value="timed_12h">Timed Level — 12 Hours Post-Dose</option>
- <option value="timed_24h">Timed Level — 24 Hours Post-Dose</option>
- </select>
- </div>
- </div>
- </section>
-
- <!-- Card 3: PSH Step 3b Quick Reference Matrix (Collapsible, collapsed by default) -->
- <section onclick="toggleCollapsibleCard('protocolBody', 'protocolChevron')"
- class="bg-slate-100/80 hover:bg-slate-100 rounded-2xl border border-slate-200/90 p-4 text-xs text-slate-700 cursor-pointer select-none transition-colors">
- <div class="flex items-center justify-between gap-2">
- <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">PSH Step 3b Reference Protocol</h3>
- <svg id="protocolChevron" class="w-4 h-4 text-slate-500 transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
- <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
- </svg>
- </div>
- <div id="protocolBody" class="hidden mt-3 pt-3 border-t border-slate-200/90 space-y-2.5">
- <div class="flex items-start gap-2">
- <span class="font-bold text-blue-700 shrink-0">i. Initial:</span>
- <span>If LD indicated in AKI/CrCl &lt;30: <strong>Modified LD (~20–25 mg/kg TBW table, max 3000 mg) × 1</strong>. If LD not indicated: <strong>15 mg/kg × 1</strong> (rounded to nearest 250 mg, max 2000 mg).</span>
- </div>
- <div class="flex items-start gap-2">
- <span class="font-bold text-blue-700 shrink-0">ii. Levels:</span>
- <span>Random level with <strong>AM labs the following day</strong> for daytime doses, or a <strong>timed level (12h vs. 24h by CrCl)</strong> if given after 17:00 up until 05:00.</span>
- </div>
- <div class="flex items-start gap-2">
- <span class="font-bold text-blue-700 shrink-0">iii. Adjust:</span>
- <div>
- <div>• <strong>Level ≥ 18 mcg/mL:</strong> No vancomycin re-dose; check random level next AM labs.</div>
- <div class="mt-0.5">• <strong>Level &lt; 18 mcg/mL:</strong> Last dose <strong>&lt; 24h</strong> → re-dose <strong>15 mg/kg × 1</strong>; Last dose <strong>≥ 24h</strong> → re-dose <strong>10 mg/kg × 1</strong>.</div>
- </div>
- </div>
- <div class="flex items-start gap-2">
- <span class="font-bold text-blue-700 shrink-0">iv. Ongoing:</span>
- <span>Daily random levels with AM labs. Once renal function stabilizes, transition to scheduled dosing &amp; DoseMeRx AUC monitoring.</span>
- </div>
- </div>
- </section>
- </div>
-
- <!-- RIGHT COLUMN: CLINICAL ACTION PLAN, CALCULATED ORDERS & EPIC i-VENT (7 cols) -->
- <div class="lg:col-span-7 space-y-5">
-
- <!-- Primary Recommendation Hero Card -->
- <section id="recommendationCard" class="bg-white rounded-2xl border-2 border-blue-600/90 shadow-md overflow-hidden">
- <div class="bg-gradient-to-r from-[#001E44] to-blue-900 px-6 py-4 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
- <div>
- <span id="recStepTag" class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-500/30 text-blue-100 border border-blue-400/30">
- Step 3b • Initial Dosing &amp; Level Order
- </span>
- <h2 id="recHeadline" class="text-lg sm:text-xl font-extrabold mt-1.5 tracking-tight">
- Enter Weight to Calculate Modified Loading Dose
- </h2>
- </div>
- <div class="text-left sm:text-right shrink-0">
- <div class="text-[11px] text-blue-200 uppercase font-semibold">Infusion Duration</div>
- <div id="recInfusionTime" class="text-sm font-bold text-white">Enter weight</div>
- </div>
- </div>
-
- <div class="p-6 space-y-5">
- <!-- 3-Step Action Grid -->
- <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
- <!-- Box 1: Medication Order -->
- <div class="rounded-xl bg-blue-50/70 border border-blue-200 p-4">
- <div class="text-[11px] font-bold uppercase tracking-wider text-blue-700">1. Vancomycin Order</div>
- <div id="boxDosePrimary" class="text-lg font-extrabold text-slate-900 mt-1">Modified LD (~20–25 mg/kg)</div>
- <div id="boxDoseSub" class="text-xs text-slate-600 mt-1 leading-snug">
- Enter actual body weight (kg) above to auto-calculate exact PSH dose.
- </div>
- </div>
-
- <!-- Box 2: Lab Timing Order -->
- <div class="rounded-xl bg-indigo-50/70 border border-indigo-200 p-4">
- <div class="text-[11px] font-bold uppercase tracking-wider text-indigo-700">2. Level Draw Timing</div>
- <div id="boxLabPrimary" class="text-base font-extrabold text-slate-900 mt-1">AM Labs Next Day</div>
- <div id="boxLabSub" class="text-xs text-slate-600 mt-1 leading-snug">
- Order Vancomycin, Random with morning labs (or timed 12h/24h level if given between 17:00 and 05:00).
- </div>
- </div>
-
- <!-- Box 3: Ongoing Monitoring -->
- <div class="rounded-xl bg-emerald-50/70 border border-emerald-200 p-4">
- <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">3. Ongoing Monitoring</div>
- <div id="boxOngoingPrimary" class="text-base font-extrabold text-slate-900 mt-1">Daily AM Random</div>
- <div id="boxOngoingSub" class="text-xs text-slate-600 mt-1 leading-snug">
- Re-dose only when level &lt; 18 mcg/mL. Switch to DoseMeRx once SCr/UOP stabilizes.
- </div>
- </div>
- </div>
-
- <!-- Detailed Clinical Rationale & Timing Breakdown -->
- <div id="rationaleCallout" class="rounded-xl bg-slate-50 border border-slate-200/90 p-4 space-y-2">
- <div class="flex items-center gap-2 text-xs font-bold text-slate-800">
- <svg class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
- <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
- </svg>
- <span id="rationaleTitle">Clinical Timing &amp; Infusion Window Verification</span>
- </div>
- <p id="rationaleBody" class="text-xs text-slate-600 leading-relaxed">
- Infusion ends at 16:00. Next morning AM labs (~05:00–06:00) occur ~13 hours post-infusion (well past the 2-hour post-distribution minimum).
- </p>
- </div>
-
- <!-- Evening / Timed Lab Decision Matrix -->
- <div id="eveningMatrixCard" class="rounded-xl border border-slate-200 overflow-hidden">
- <div class="px-4 py-2.5 bg-slate-100/80 border-b border-slate-200 flex items-center justify-between">
- <span class="text-xs font-bold text-slate-700">After-Hours Administration Timed Lab Rule (&gt; 17:00 to 05:00, by CrCl)</span>
- <span id="crclRuleTag" class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-800">Est. CrCl: --</span>
- </div>
- <div class="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 text-xs">
- <div id="ruleCrclHigh" class="p-3.5 transition-colors bg-white">
- <div class="font-bold text-slate-800">CrCl ≥ 40 mL/min (or Rapid Recovery)</div>
- <div class="text-slate-600 mt-1">Order timed random level <span class="font-bold text-blue-700">12 hours</span> after dose when administered after 17:00 up until 05:00.</div>
- </div>
- <div id="ruleCrclLow" class="p-3.5 transition-colors bg-white">
- <div class="font-bold text-slate-800">CrCl &lt; 40 mL/min / Significant AKI</div>
- <div class="text-slate-700 mt-1">Order timed random level <span class="font-bold text-blue-700">24 hours</span> after dose when administered after 17:00 up until 05:00.</div>
- </div>
- </div>
- </div>
- </div>
- </section>
-
- <!-- Ongoing Monitoring & Transition to Scheduled Therapy Checklist (Collapsible, collapsed by default) -->
- <section onclick="toggleCollapsibleCard('ongoingBody', 'ongoingChevron')"
- class="bg-white hover:bg-slate-50/70 rounded-2xl border border-slate-200/90 shadow-sm p-5 cursor-pointer select-none transition-colors">
- <div class="flex items-center justify-between gap-2">
- <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
- <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
- <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
- </svg>
- Step 3b-iv: Ongoing Monitoring &amp; Transition Criteria
- </h3>
- <svg id="ongoingChevron" class="w-4 h-4 text-slate-500 transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
- <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
- </svg>
- </div>
- <div id="ongoingBody" class="hidden mt-3.5 pt-3.5 border-t border-slate-200/80 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
- <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
- <div class="font-bold text-slate-800">While Renal Function Remains Unstable</div>
- <ul class="mt-1.5 space-y-1 text-slate-600 list-disc list-inside">
- <li>Continue daily random vancomycin levels with AM labs.</li>
- <li>Keep <span class="font-semibold text-slate-800">vancomycin (dosed by levels) placeholder</span> active.</li>
- <li>Never schedule standing maintenance doses until SCr/UOP trends stabilize.</li>
- <li>Re-dose only when serum concentration is <span class="font-bold text-emerald-700">&lt; 18 mcg/mL</span>.</li>
- </ul>
- </div>
- <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
- <div class="font-bold text-slate-800">When Renal Function Stabilizes</div>
- <ul class="mt-1.5 space-y-1 text-slate-600 list-disc list-inside">
- <li>Discontinue the dosed-by-levels placeholder order.</li>
- <li>Transition to scheduled maintenance dosing (e.g., Q24H or per DoseMeRx).</li>
- <li>Switch to <span class="font-semibold text-blue-700">DoseMeRx AUC₂₄ (400–600 mg·h/L)</span> monitoring.</li>
- <li>If ESRD not on HD at baseline SCr, establish standing schedule once levels predictable.</li>
- </ul>
- </div>
- </div>
- </section>
-
- <!-- Epic i-Vent Documentation Generator Card -->
- <section class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
- <div class="px-5 py-3.5 bg-slate-50/80 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-2">
- <div class="flex items-center gap-2">
- <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
- <h3 class="text-sm font-bold text-slate-800">EPIC Pharmacokinetic i-Vent Note (PSH Plan)</h3>
- </div>
- <button id="copyBtn" type="button" onclick="copyIventToClipboard()"
- class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#001E44] hover:bg-blue-900 text-white text-xs font-semibold shadow-sm transition-all active:scale-95">
- <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
- <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
- </svg>
- <span id="copyBtnText">Copy i-Vent Note</span>
- </button>
- </div>
- <div class="p-4">
- <textarea id="iventOutput" rows="12" readonly
- class="w-full rounded-xl bg-slate-900 text-slate-100 font-mono text-xs p-4 leading-relaxed focus:outline-none border border-slate-700"></textarea>
- <div id="copyFeedback" class="hidden mt-2 text-xs font-semibold text-emerald-700 flex items-center gap-1.5">
- <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
- <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
- </svg>
- Copied to clipboard — ready to paste into EPIC i-Vent!
- </div>
- </div>
- </section>
-
- </div>
- </div>
- </main>
-
- <script>
- // Global application state
- const state = {
- mode: 'initial', // 'initial' | 'followup'
- ldIndicated: true,
- ldTier: 'modified' // 'modified' (PSH AKI/CrCl <30/Obese table) | 'standard' (~25 mg/kg table)
- };
-
- function toggleCollapsibleCard(bodyId, chevronId) {
- const body = document.getElementById(bodyId);
- const chevron = document.getElementById(chevronId);
- if (!body) return;
- const isHidden = body.classList.contains('hidden');
- if (isHidden) {
- body.classList.remove('hidden');
- if (chevron) chevron.classList.add('rotate-180');
- } else {
- body.classList.add('hidden');
- if (chevron) chevron.classList.remove('rotate-180');
- }
- }
-
- // Initialize default dates/times on load
- window.addEventListener('DOMContentLoaded', () => {
- const now = new Date();
- const nextHourDt = new Date(now.getTime());
- nextHourDt.setHours(nextHourDt.getHours() + 1, 0, 0, 0);
-
- document.getElementById('initDoseDate').value = formatDateInput(nextHourDt);
- document.getElementById('initDoseTime').value = formatTimeInput(nextHourDt);
-
- // Default follow-up timestamps: last dose 16 hours ago, level drawn now
- const sixteenHoursAgo = new Date(now.getTime() - 16 * 60 * 60 * 1000);
- document.getElementById('lastDoseDateTime').value = formatDateTimeLocal(sixteenHoursAgo);
- document.getElementById('levelDrawDateTime').value = formatDateTimeLocal(now);
-
- recalculateAll();
- });
-
- function formatDateInput(dateObj) {
- const y = dateObj.getFullYear();
- const m = String(dateObj.getMonth() + 1).padStart(2, '0');
- const d = String(dateObj.getDate()).padStart(2, '0');
- return `${y}-${m}-${d}`;
- }
-
- function formatTimeInput(dateObj) {
- const hh = String(dateObj.getHours()).padStart(2, '0');
- const mm = String(dateObj.getMinutes()).padStart(2, '0');
- return `${hh}:${mm}`;
- }
-
- function formatDateTimeLocal(dateObj) {
- const y = dateObj.getFullYear();
- const m = String(dateObj.getMonth() + 1).padStart(2, '0');
- const d = String(dateObj.getDate()).padStart(2, '0');
- const hh = String(dateObj.getHours()).padStart(2, '0');
- const mm = String(dateObj.getMinutes()).padStart(2, '0');
- return `${y}-${m}-${d}T${hh}:${mm}`;
- }
-
- function formatFriendlyTime(dateObj) {
- return dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
- }
-
- function formatFriendlyDate(dateObj) {
- return dateObj.toLocaleDateString([], { month: '2-digit', day: '2-digit' });
- }
-
- // Round mg to nearest 250 mg with min 500 mg and configurable max
- function roundVancoDose(rawMg, maxMg) {
- const rounded = Math.round(rawMg / 250) * 250;
- return Math.min(Math.max(rounded, 500), maxMg);
- }
-
- // Exact PSH Step 1 Modified Loading Dose (~20-25 mg/kg TBW) for AKI, CrCl <30, BMI >=30, HD
- function getModifiedLoadingDose(tbw) {
- if (tbw < 36) return roundVancoDose(tbw * 20, 3000);
- if (tbw <= 45.9) return 750;
- if (tbw <= 55.9) return 1000;
- if (tbw <= 65.9) return 1250;
- if (tbw <= 75.9) return 1500;
- if (tbw <= 90.9) return 1750;
- if (tbw <= 99.9) return 2000;
- if (tbw <= 109.9) return 2250;
- if (tbw <= 129.9) return 2500;
- if (tbw <= 149.9) return 2750;
- return 3000; // >= 150 kg
- }
-
- // Exact PSH Step 1 Standard Loading Dose (~25 mg/kg TBW)
- function getStandardLoadingDose(tbw) {
- if (tbw < 36) return roundVancoDose(tbw * 25, 3000);
- if (tbw <= 45.9) return 1000;
- if (tbw <= 55.9) return 1250;
- if (tbw <= 65.9) return 1500;
- if (tbw <= 75.9) return 1750;
- if (tbw <= 90.9) return 2000;
- if (tbw <= 99.9) return 2250;
- if (tbw <= 109.9) return 2500;
- if (tbw <= 119.9) return 2750;
- return 3000; // >= 120 kg
- }
-
- // Standard PSH infusion duration rule
- function getInfusionMinutes(doseMg) {
- if (doseMg <= 1000) return 60;
- if (doseMg <= 1500) return 90;
- if (doseMg <= 2000) return 120;
- return 150; // > 2000 mg (e.g., 2250-3000 mg) over 2.5 hrs (150 min)
- }
-
- function setEncounterMode(mode) {
- state.mode = mode;
- const btnInit = document.getElementById('btnModeInitial');
- const btnFoll = document.getElementById('btnModeFollowup');
- const panelInit = document.getElementById('panelInitialInputs');
- const panelFoll = document.getElementById('panelFollowupInputs');
-
- if (mode === 'initial') {
- btnInit.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-sm';
- btnFoll.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-blue-200 hover:text-white';
- panelInit.classList.remove('hidden');
- panelFoll.classList.add('hidden');
- } else {
- btnFoll.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow-sm';
- btnInit.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-blue-200 hover:text-white';
- panelFoll.classList.remove('hidden');
- panelInit.classList.add('hidden');
- }
- recalculateAll();
- }
-
- function setLdIndicated(isIndicated) {
- state.ldIndicated = isIndicated;
- const btnYes = document.getElementById('btnLdYes');
- const btnNo = document.getElementById('btnLdNo');
- const ldWrapper = document.getElementById('ldTargetWrapper');
-
- if (isIndicated) {
- btnYes.className = 'p-3 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition-all';
- btnYes.querySelector('div:first-child').className = 'text-xs font-bold text-blue-900';
- btnNo.className = 'p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition-all';
- btnNo.querySelector('div:first-child').className = 'text-xs font-bold text-slate-800';
- ldWrapper.classList.remove('hidden');
- } else {
- btnNo.className = 'p-3 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition-all';
- btnNo.querySelector('div:first-child').className = 'text-xs font-bold text-blue-900';
- btnYes.className = 'p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition-all';
- btnYes.querySelector('div:first-child').className = 'text-xs font-bold text-slate-800';
- ldWrapper.classList.add('hidden');
- }
- recalculateAll();
- }
-
- function setLdTier(tier) {
- state.ldTier = tier;
- document.getElementById('ldTargetBadge').textContent =
- tier === 'modified' ? 'Modified (~20–25 mg/kg)' : 'Standard (~25 mg/kg)';
- const btnMod = document.getElementById('btnLdModified');
- const btnStd = document.getElementById('btnLdStandard');
- if (tier === 'modified') {
- btnMod.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-sm';
- btnStd.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-100';
- } else {
- btnStd.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-sm';
- btnMod.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-100';
- }
- recalculateAll();
- }
-
- function setInitPresetTime(timeStr) {
- document.getElementById('initDoseTime').value = timeStr;
- recalculateAll();
- }
-
- function setFollowupLevel(val) {
- document.getElementById('randomLevel').value = val;
- recalculateAll();
- }
-
- function setElapsedHoursPreset(hoursAgo) {
- const levelVal = document.getElementById('levelDrawDateTime').value;
- const refDate = levelVal ? new Date(levelVal) : new Date();
- const doseDate = new Date(refDate.getTime() - hoursAgo * 60 * 60 * 1000);
- document.getElementById('lastDoseDateTime').value = formatDateTimeLocal(doseDate);
- recalculateAll();
- }
-
- function resetForm() {
- document.getElementById('weightKg').value = '';
- document.getElementById('heightCm').value = '';
- document.getElementById('ageYrs').value = '';
- document.getElementById('sex').value = '';
- document.getElementById('scr').value = '';
- document.getElementById('akiContext').value = 'aki_new';
- document.getElementById('labTimingStrategy').value = 'auto';
- document.getElementById('randomLevel').value = '';
- document.getElementById('followupDoseOverride').value = 'auto';
- document.getElementById('followupNextLabMode').value = 'am_next';
-
- const now = new Date();
- const nextHourDt = new Date(now.getTime());
- nextHourDt.setHours(nextHourDt.getHours() + 1, 0, 0, 0);
-
- document.getElementById('initDoseDate').value = formatDateInput(nextHourDt);
- document.getElementById('initDoseTime').value = formatTimeInput(nextHourDt);
- const sixteenHoursAgo = new Date(now.getTime() - 16 * 60 * 60 * 1000);
- document.getElementById('lastDoseDateTime').value = formatDateTimeLocal(sixteenHoursAgo);
- document.getElementById('levelDrawDateTime').value = formatDateTimeLocal(now);
-
- setLdIndicated(true);
- setLdTier('modified');
- recalculateAll();
- }
-
- function recalculateAll() {
- const rawTbw = parseFloat(document.getElementById('weightKg').value);
- const rawHeight = parseFloat(document.getElementById('heightCm').value);
- const rawAge = parseFloat(document.getElementById('ageYrs').value);
- const sex = document.getElementById('sex').value;
- const rawScr = parseFloat(document.getElementById('scr').value);
- const akiContext = document.getElementById('akiContext').value;
-
- const hasTbw = !isNaN(rawTbw) && rawTbw >= 20;
- const hasHeight = !isNaN(rawHeight) && rawHeight >= 100;
- const hasAge = !isNaN(rawAge) && rawAge >= 18;
- const hasSex = sex === 'M' || sex === 'F';
- const hasScr = !isNaN(rawScr) && rawScr >= 0.2;
-
- // BMI
- if (hasTbw && hasHeight) {
- const heightM = rawHeight / 100;
- const bmi = rawTbw / (heightM * heightM);
- document.getElementById('dispBmi').textContent = `${bmi.toFixed(1)} kg/m²`;
- } else {
- document.getElementById('dispBmi').textContent = '--';
- }
-
- // IBW & AdjBW
- let ibw = null;
- let adjBw = null;
- if (hasHeight && hasSex) {
- const heightInches = rawHeight / 2.54;
- const baseIbw = sex === 'M' ? 50 : 45.5;
- ibw = Math.max(35, baseIbw + 2.3 * Math.max(0, heightInches - 60));
- if (hasTbw) {
- adjBw = ibw + 0.4 * (rawTbw - ibw);
- document.getElementById('dispIbw').textContent = `${ibw.toFixed(1)} / ${adjBw.toFixed(1)} kg`;
- } else {
- document.getElementById('dispIbw').textContent = `${ibw.toFixed(1)} / -- kg`;
- }
- } else {
- document.getElementById('dispIbw').textContent = '--';
- }
-
- // Cockcroft-Gault CrCl
- let crclRounded = null;
- const ruleHigh = document.getElementById('ruleCrclHigh');
- const ruleLow = document.getElementById('ruleCrclLow');
-
- if (hasTbw && hasAge && hasSex && hasScr) {
- let dosingWeightForCrCl = rawTbw;
- if (hasHeight && ibw !== null) {
- const heightM = rawHeight / 100;
- const bmi = rawTbw / (heightM * heightM);
- if (rawTbw < ibw) {
- dosingWeightForCrCl = rawTbw;
- } else if (bmi >= 30 || rawTbw > 1.2 * ibw) {
- dosingWeightForCrCl = adjBw;
- } else {
- dosingWeightForCrCl = ibw;
- }
- }
- let crcl = ((140 - rawAge) * dosingWeightForCrCl) / (72 * rawScr);
- if (sex === 'F') crcl *= 0.85;
- crclRounded = Math.round(crcl);
-
- document.getElementById('dispCrCl').textContent = `${crclRounded} mL/min`;
- document.getElementById('crclRuleTag').textContent = `Est. CrCl: ${crclRounded} mL/min`;
-
- if (crclRounded >= 40) {
- ruleHigh.className = 'p-3.5 transition-colors bg-blue-50/80';
- ruleHigh.querySelector('div:first-child').className = 'font-bold text-blue-900';
- ruleLow.className = 'p-3.5 transition-colors bg-white';
- ruleLow.querySelector('div:first-child').className = 'font-bold text-slate-800';
- } else {
- ruleLow.className = 'p-3.5 transition-colors bg-blue-50/80';
- ruleLow.querySelector('div:first-child').className = 'font-bold text-blue-900';
- ruleHigh.className = 'p-3.5 transition-colors bg-white';
- ruleHigh.querySelector('div:first-child').className = 'font-bold text-slate-800';
- }
- } else {
- document.getElementById('dispCrCl').textContent = '--';
- document.getElementById('crclRuleTag').textContent = 'Est. CrCl: --';
- ruleHigh.className = 'p-3.5 transition-colors bg-white';
- ruleHigh.querySelector('div:first-child').className = 'font-bold text-slate-800';
- ruleLow.className = 'p-3.5 transition-colors bg-white';
- ruleLow.querySelector('div:first-child').className = 'font-bold text-slate-800';
- }
-
- if (state.mode === 'initial') {
- renderInitialPlan(hasTbw ? rawTbw : null, crclRounded, akiContext);
- } else {
- renderFollowupPlan(hasTbw ? rawTbw : null, crclRounded, akiContext);
- }
- }
-
- function renderInitialPlan(tbw, crclRounded, akiContext) {
- const isModifiedLd = state.ldIndicated && state.ldTier === 'modified';
- const maxCap = state.ldIndicated ? 3000 : 2000;
- const hasWeight = tbw !== null;
-
- let finalDose = null;
- let effectiveMgKg = null;
- if (hasWeight) {
- if (!state.ldIndicated) {
- finalDose = roundVancoDose(tbw * 15, 2000);
- } else if (isModifiedLd) {
- finalDose = getModifiedLoadingDose(tbw);
- } else {
- finalDose = getStandardLoadingDose(tbw);
- }
- effectiveMgKg = (finalDose / tbw).toFixed(1);
- }
- const infusionMin = hasWeight ? getInfusionMinutes(finalDose) : 120;
-
- // Parse admin date & time
- const dateStr = document.getElementById('initDoseDate').value || formatDateInput(new Date());
- const timeStr = document.getElementById('initDoseTime').value || '14:00';
- const startDt = new Date(`${dateStr}T${timeStr}`);
- const endInfusionDt = new Date(startDt.getTime() + infusionMin * 60 * 1000);
-
- // Next morning AM labs benchmark (05:30 next calendar day)
- const nextMorningDt = new Date(startDt);
- nextMorningDt.setDate(nextMorningDt.getDate() + 1);
- nextMorningDt.setHours(5, 30, 0, 0);
-
- const startHour = startDt.getHours() + startDt.getMinutes() / 60;
-
- // Determine whether dose is given after 17:00 up until 05:00, or manually forced to 12h/24h
- const strategyOverride = document.getElementById('labTimingStrategy').value;
- const isAfterHoursWindow = startHour > 17.0 || startHour <= 5.0;
- const isManual12h = strategyOverride === 'timed_12h';
- const isManual24h = strategyOverride === 'timed_24h';
- const useTimedEveningLab =
- isManual12h ||
- isManual24h ||
- (strategyOverride === 'auto' && isAfterHoursWindow);
-
- // Timed interval: manual 12h/24h override takes precedence, otherwise 12h if CrCl >= 40, 24h if CrCl < 40
- const hasCrCl = crclRounded !== null;
- const timedHours = isManual12h
- ? 12
- : isManual24h
- ? 24
- : hasCrCl
- ? (crclRounded >= 40 ? 12 : 24)
- : null;
- const isManualTimedOverride = isManual12h || isManual24h;
- const timedLabDt = timedHours ? new Date(startDt.getTime() + timedHours * 60 * 60 * 1000) : null;
-
- // Update Hero Card
- const recCard = document.getElementById('recommendationCard');
- recCard.className = 'bg-white rounded-2xl border-2 border-blue-600/90 shadow-md overflow-hidden';
-
- document.getElementById('recStepTag').textContent = !state.ldIndicated
- ? 'Step 3b-i • No Loading Dose (15 mg/kg × 1)'
- : isModifiedLd
- ? 'Step 1 & 3b-i • Modified Loading Dose (AKI / CrCl < 30)'
- : 'Step 1 & 3b-i • Standard Loading Dose (~25 mg/kg)';
-
- if (hasWeight) {
- document.getElementById('recHeadline').textContent = !state.ldIndicated
- ? `Administer Initial Dose: ${finalDose.toLocaleString()} mg IV × 1`
- : isModifiedLd
- ? `Administer Modified Loading Dose: ${finalDose.toLocaleString()} mg IV × 1`
- : `Administer Standard Loading Dose: ${finalDose.toLocaleString()} mg IV × 1`;
- document.getElementById('recInfusionTime').textContent = `Infuse over ${infusionMin} min`;
- document.getElementById('boxDosePrimary').textContent = `${finalDose.toLocaleString()} mg IV × 1`;
- document.getElementById('boxDoseSub').textContent = !state.ldIndicated
- ? `15 mg/kg × ${tbw} kg = ${Math.round(tbw * 15)} mg → rounded to nearest 250 mg (Max 2,000 mg). Plus dosed-by-levels placeholder.`
- : isModifiedLd
- ? `PSH Modified LD table for ${tbw} kg (${effectiveMgKg} mg/kg; ~20–25 mg/kg tier for AKI/CrCl <30/Obese, max 3,000 mg). Plus dosed-by-levels placeholder.`
- : `PSH Standard LD table for ${tbw} kg (${effectiveMgKg} mg/kg; ~25 mg/kg tier, max 3,000 mg). Plus dosed-by-levels placeholder.`;
- } else {
- const tierLabel = !state.ldIndicated
- ? 'Initial Dose (15 mg/kg × 1)'
- : isModifiedLd
- ? 'Modified Loading Dose (~20–25 mg/kg Table)'
- : 'Standard Loading Dose (~25 mg/kg Table)';
- document.getElementById('recHeadline').textContent = `Enter Weight to Calculate ${tierLabel}`;
- document.getElementById('recInfusionTime').textContent = 'Enter weight';
- document.getElementById('boxDosePrimary').textContent = !state.ldIndicated
- ? '15 mg/kg × 1'
- : isModifiedLd
- ? 'Modified LD (~20–25 mg/kg)'
- : 'Standard LD (~25 mg/kg)';
- document.getElementById('boxDoseSub').textContent =
- `Enter actual body weight (kg) above to auto-calculate exact PSH dose (max ${maxCap.toLocaleString()} mg).`;
- }
-
- // Box 2: Lab Timing
- let labPlanShort = '';
- let labPlanDetail = '';
- let iventLabLine = '';
-
- if (!useTimedEveningLab) {
- labPlanShort = `Random Level w/ AM Labs (${formatFriendlyDate(nextMorningDt)})`;
- labPlanDetail = `Draw with morning labs tomorrow (~05:30 on ${formatFriendlyDate(nextMorningDt)}) per PSH daytime dose-by-level workflow.`;
- iventLabLine = `Order Vancomycin, Random level with AM labs tomorrow morning (${formatFriendlyDate(nextMorningDt)}).`;
- } else if (timedHours !== null) {
- const timingReason = isManualTimedOverride
- ? `Manually selected ${timedHours}-hour timed level`
- : `Dose given after 17:00–05:00 (${formatFriendlyTime(startDt)}): CrCl is ${crclRounded} mL/min (${crclRounded >= 40 ? '≥ 40' : '< 40'} mL/min)`;
- const iventReason = isManualTimedOverride
- ? `based on clinical assessment`
- : `based on CrCl ${crclRounded} mL/min`;
- labPlanShort = `Timed Random Level in ${timedHours}h (${formatFriendlyDate(timedLabDt)} ${formatFriendlyTime(timedLabDt)})`;
- labPlanDetail = `${timingReason} — draw timed level ${timedHours} hours post-dose on ${formatFriendlyDate(timedLabDt)} at ${formatFriendlyTime(timedLabDt)}.`;
- iventLabLine = `Order timed Vancomycin, Random level ${timedHours} hours post-dose on ${formatFriendlyDate(timedLabDt)} at ${formatFriendlyTime(timedLabDt)} (${iventReason}).`;
- } else {
- labPlanShort = 'Timed Random Level (12h or 24h)';
- labPlanDetail = `Dose given after 17:00 up until 05:00 (${formatFriendlyTime(startDt)}): order a timed level at 12 hours or 24 hours post-dose (enter Age, Height, Sex, and SCr to auto-select 12h vs. 24h by CrCl, or select manually above).`;
- iventLabLine = `Dose administered after 17:00–05:00 (${formatFriendlyTime(startDt)}); order timed Vancomycin, Random level in 12 hours or 24 hours post-dose (12h if CrCl ≥ 40 mL/min; 24h if CrCl < 40 mL/min).`;
- }
-
- document.getElementById('boxLabPrimary').textContent = labPlanShort;
- document.getElementById('boxLabSub').textContent = labPlanDetail;
-
- // Box 3: Ongoing
- document.getElementById('boxOngoingPrimary').textContent = 'Re-Dose Only if < 18 mcg/mL';
- document.getElementById('boxOngoingSub').textContent =
- 'Hold if ≥ 18 mcg/mL. Follow daily AM random levels & SCr/UOP; transition to DoseMeRx once renal function stabilizes.';
-
- // Rationale Callout
- document.getElementById('rationaleTitle').textContent = useTimedEveningLab
- ? isManualTimedOverride
- ? `Manual Timed Level Selected → ${timedHours}-Hour Post-Dose Draw`
- : `After-Hours Administration (${formatFriendlyTime(startDt)}, > 17:00–05:00) → ${hasCrCl ? timedHours + '-Hour' : '12h or 24h'} Timed Level`
- : `Daytime Administration (${formatFriendlyTime(startDt)}) → Next-Day AM Labs Selected`;
-
- document.getElementById('rationaleBody').textContent = useTimedEveningLab
- ? isManualTimedOverride
- ? `Infusion starts at ${formatFriendlyTime(startDt)} and finishes at ${formatFriendlyTime(endInfusionDt)}. Per your manual selection, draw a timed Vancomycin, Random level ${timedHours} hours post-dose on ${formatFriendlyDate(timedLabDt)} at ${formatFriendlyTime(timedLabDt)}.`
- : `Infusion starts at ${formatFriendlyTime(startDt)} (within the after-hours > 17:00 to 05:00 window), so it does not default to AM labs. Order a timed Vancomycin, Random level at ${hasCrCl ? `${timedHours} hrs on ${formatFriendlyDate(timedLabDt)} at ${formatFriendlyTime(timedLabDt)} (${crclRounded >= 40 ? 'CrCl ≥ 40 mL/min → 12h' : 'CrCl < 40 mL/min → 24h'})` : '12 hours or 24 hours post-dose (enter renal parameters to auto-select 12h for CrCl ≥ 40 mL/min vs. 24h for CrCl < 40 mL/min)'}.`
- : `Infusion starts at ${formatFriendlyTime(startDt)} (outside the after-hours > 17:00 to 05:00 window) and finishes at ${formatFriendlyTime(endInfusionDt)}. Draw a random vancomycin level with next morning AM labs (~05:30 on ${formatFriendlyDate(nextMorningDt)}).`;
-
- // Build Initial i-Vent Note (Clean Plan only, zero @...@ tokens)
- const akiNote =
- akiContext === 'aki_transition'
- ? 'Patient developed acute kidney injury during vancomycin therapy; holding scheduled doses and transitioning to dose-by-level protocol.'
- : 'Unstable/impaired renal function; initiating vancomycin dose-by-level protocol.';
-
- const doseDisplay = hasWeight ? `${finalDose.toLocaleString()} mg` : '*** mg';
- const infDisplay = hasWeight ? `${infusionMin} minutes` : '*** minutes';
- const mgKgDisplay = hasWeight ? `${effectiveMgKg} mg/kg` : (isModifiedLd ? '~20-25 mg/kg' : '~25 mg/kg');
- const doseDesc = !state.ldIndicated
- ? `Loading dose not indicated; administer vancomycin ${doseDisplay} IV x 1 (15 mg/kg; rounded to nearest 250 mg, max 2000 mg) over ${infDisplay}.`
- : isModifiedLd
- ? `Administer vancomycin ${doseDisplay} IV x 1 modified loading dose (${mgKgDisplay} per PSH AKI/CrCl <30 modified LD table, max 3000 mg) over ${infDisplay}.`
- : `Administer vancomycin ${doseDisplay} IV x 1 loading dose (${mgKgDisplay} per PSH standard LD table, max 3000 mg) over ${infDisplay}.`;
-
- const ivent = `Pharmacy Managed Vancomycin - Initial Dosing (Dose by Level)
+  <!-- Top Header Banner (Penn State Health Navy Theme) -->
+  <header class="bg-[#001E44] text-white border-b border-blue-900/60 shadow-md sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 text-blue-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-extrabold tracking-tight leading-tight">Vancomycin: Dose by Level</h1>
+          <p class="text-xs text-blue-200/90">PSH Step 3b Clinical Guidance • AKI / Unstable Renal Function</p>
+        </div>
+      </div>
+
+      <!-- Encounter Mode Switcher & Reset Patient -->
+      <div class="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+        <div class="flex items-center bg-slate-900/60 p-1 rounded-xl border border-blue-400/20">
+          <button id="btnModeInitial" type="button" onclick="setEncounterMode('initial')"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-sm">
+            New Start (Initial)
+          </button>
+          <button id="btnModeFollowup" type="button" onclick="setEncounterMode('followup')"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-blue-200 hover:text-white">
+            Follow-Up (Level Check)
+          </button>
+        </div>
+        <button type="button" onclick="resetForm()"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-blue-300/30 transition-all active:scale-95">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Reset Patient
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Clinical Alert Banner -->
+    <div class="mb-6 rounded-2xl bg-amber-50 border border-amber-200/90 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+      <div class="flex items-start gap-3">
+        <div class="p-2 rounded-xl bg-amber-100 text-amber-700 shrink-0 mt-0.5">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-amber-950">EPIC Order Requirement: Vancomycin (Dosed by Levels) Placeholder</h2>
+          <p class="text-xs text-amber-800 mt-0.5 leading-relaxed">
+            In <span class="font-semibold">RXVANC</span> (Database tab), ensure <span class="font-semibold underline">vancomycin (dosed by levels) placeholder</span> is ordered alongside any one-time dose. If patient developed AKI on scheduled therapy, hold future doses and stop any active infusion immediately.
+          </p>
+        </div>
+      </div>
+      <span class="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-amber-200/70 text-amber-900 shrink-0 self-start sm:self-center">
+        Bayesian (DoseMeRx) Not Reliable in AKI
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <!-- LEFT COLUMN: PATIENT INPUTS & CLINICAL PARAMETERS (5 cols) -->
+      <div class="lg:col-span-5 space-y-5">
+
+        <!-- Card 1: Patient Demographics & Renal Parameters -->
+        <section class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+          <div class="px-5 py-3.5 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-[#001E44] text-white text-xs font-bold flex items-center justify-center">1</span>
+              <h2 class="text-sm font-bold text-slate-800">Patient Demographics &amp; Renal Status</h2>
+            </div>
+            <button type="button" onclick="resetForm()" class="text-xs font-semibold text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2.5 py-1 rounded-lg transition-colors">
+              Reset Patient
+            </button>
+          </div>
+
+          <div class="p-5 space-y-4">
+            <!-- Weight, Height -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Actual Body Weight (kg)</label>
+                <input id="weightKg" type="number" step="0.1" min="20" max="400" placeholder="e.g., 85" oninput="recalculateAll()"
+                  class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-900 placeholder:font-normal placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Height (cm)</label>
+                <input id="heightCm" type="number" step="1" min="100" max="250" placeholder="e.g., 175" oninput="recalculateAll()"
+                  class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" />
+              </div>
+            </div>
+
+            <!-- Age, Sex, SCr -->
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Age (yrs)</label>
+                <input id="ageYrs" type="number" min="18" max="115" placeholder="e.g., 64" oninput="recalculateAll()"
+                  class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Sex</label>
+                <select id="sex" onchange="recalculateAll()"
+                  class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+                  <option value="">Select...</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">SCr (mg/dL)</label>
+                <input id="scr" type="number" step="0.01" min="0.2" max="15" placeholder="e.g., 2.1" oninput="recalculateAll()"
+                  class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" />
+              </div>
+            </div>
+
+            <!-- Auto-calculated Demographic Summary Pill Bar -->
+            <div class="grid grid-cols-3 gap-2 pt-1">
+              <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-2.5 text-center">
+                <div class="text-[11px] font-medium text-slate-500">BMI</div>
+                <div id="dispBmi" class="text-sm font-bold text-slate-800 mt-0.5">--</div>
+              </div>
+              <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-2.5 text-center">
+                <div class="text-[11px] font-medium text-slate-500">IBW / AdjBW</div>
+                <div id="dispIbw" class="text-xs font-bold text-slate-800 mt-1">--</div>
+              </div>
+              <div class="rounded-xl bg-blue-50/80 border border-blue-200/80 p-2.5 text-center">
+                <div class="text-[11px] font-medium text-blue-700">Est. CrCl (CG)</div>
+                <div id="dispCrCl" class="text-sm font-bold text-blue-900 mt-0.5">--</div>
+              </div>
+            </div>
+
+            <!-- Clinical Reason for Dose by Level -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Clinical Scenario / Renal Instability Trigger</label>
+              <select id="akiContext" onchange="recalculateAll()"
+                class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <option value="aki_new">Acute Kidney Injury (AKI) / Fluctuating SCr or Urine Output</option>
+                <option value="aki_transition">Developed AKI During Scheduled Vancomycin (Hold &amp; Transition)</option>
+                <option value="esrd_nondialysis">ESRD / Severe CKD Not Yet on Dialysis</option>
+                <option value="hemodynamic">Hemodynamic Instability / Rapidly Changing Renal Function</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Card 2A: INITIAL DOSING & LAB TIMING (Visible in Initial Mode) -->
+        <section id="panelInitialInputs" class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+          <div class="px-5 py-3.5 bg-slate-50/80 border-b border-slate-200/80 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-blue-600 text-white text-xs font-bold flex items-center justify-center">2</span>
+            <h2 class="text-sm font-bold text-slate-800">Initial Dose &amp; Level Timing Setup</h2>
+          </div>
+
+          <div class="p-5 space-y-4">
+            <!-- Loading Dose Indicated Toggle -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1.5">Is a Loading Dose (LD) Indicated?</label>
+              <div class="grid grid-cols-2 gap-2.5">
+                <button id="btnLdYes" type="button" onclick="setLdIndicated(true)"
+                  class="p-3 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition-all">
+                  <div class="text-xs font-bold text-blue-900">YES — Modified LD (AKI)</div>
+                  <div class="text-[11px] text-blue-700 mt-0.5">~20–25 mg/kg Table (Max 3000 mg)</div>
+                </button>
+                <button id="btnLdNo" type="button" onclick="setLdIndicated(false)"
+                  class="p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition-all">
+                  <div class="text-xs font-bold text-slate-800">NO — No Load</div>
+                  <div class="text-[11px] text-slate-500 mt-0.5">15 mg/kg × 1 (Max 2000 mg)</div>
+                </button>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1.5 leading-snug">
+                <span class="font-semibold text-slate-700">PSH LD Criteria:</span> ICU, Sepsis, Bacteremia, CNS/Meningitis, Endovascular, Pneumonia, Necrotizing infection, Osteomyelitis.
+              </p>
+            </div>
+
+            <!-- Target mg/kg selector when LD = Yes -->
+            <div id="ldTargetWrapper" class="bg-slate-50 rounded-xl p-3 border border-slate-200/80">
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-xs font-semibold text-slate-700">Loading Dose Tier (PSH Step 1 Table)</label>
+                <span id="ldTargetBadge" class="text-xs font-bold text-blue-700">Modified (~20–25 mg/kg)</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <button id="btnLdModified" type="button" onclick="setLdTier('modified')"
+                  class="py-1.5 px-3 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-sm">
+                  Modified LD (AKI / CrCl &lt;30)
+                </button>
+                <button id="btnLdStandard" type="button" onclick="setLdTier('standard')"
+                  class="py-1.5 px-3 rounded-lg text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-100">
+                  Standard LD (~25 mg/kg)
+                </button>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1.5 leading-snug">
+                Per PSH Step 1, <span class="font-semibold text-slate-700">Modified LD</span> applies to AKI, CrCl &lt; 30 mL/min, Obese (BMI ≥ 30), HD, or emergent unavailable SCr.
+              </p>
+            </div>
+
+            <!-- Administration Date & Time (to auto-determine AM labs vs Timed 12h/24h lab) -->
+            <div class="pt-1 border-t border-slate-100">
+              <label class="block text-xs font-semibold text-slate-700 mb-1.5">Planned / Actual Dose Administration Date &amp; Time</label>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <span class="block text-[11px] text-slate-500 mb-1">Admin Date</span>
+                  <input id="initDoseDate" type="date" onchange="recalculateAll()"
+                    class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                </div>
+                <div>
+                  <span class="block text-[11px] text-slate-500 mb-1">Infusion Start Time</span>
+                  <input id="initDoseTime" type="time" value="14:00" onchange="recalculateAll()"
+                    class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                </div>
+              </div>
+
+              <!-- Quick Time Presets -->
+              <div class="flex flex-wrap items-center gap-1.5 mt-2">
+                <span class="text-[11px] text-slate-500 mr-1">Quick test:</span>
+                <button type="button" onclick="setInitPresetTime('10:00')" class="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">10:00 AM (Daytime)</button>
+                <button type="button" onclick="setInitPresetTime('18:00')" class="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">6:00 PM (Evening)</button>
+                <button type="button" onclick="setInitPresetTime('23:30')" class="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">11:30 PM (Late Night)</button>
+              </div>
+            </div>
+
+            <!-- Override Lab Draw Strategy -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Level Ordering Strategy</label>
+              <select id="labTimingStrategy" onchange="recalculateAll()"
+                class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <option value="auto">Auto-Select Based on Dose Time &amp; CrCl (Recommended)</option>
+                <option value="am_next">Random Level with AM Labs Next Day</option>
+                <option value="timed_12h">Timed Level — 12 Hours Post-Dose</option>
+                <option value="timed_24h">Timed Level — 24 Hours Post-Dose</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Card 2B: FOLLOW-UP LEVEL ASSESSMENT (Visible in Follow-Up Mode) -->
+        <section id="panelFollowupInputs" class="hidden bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+          <div class="px-5 py-3.5 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">2</span>
+              <h2 class="text-sm font-bold text-slate-800">Follow-Up Level &amp; Last Dose Timing</h2>
+            </div>
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">Threshold: 18 mcg/mL</span>
+          </div>
+
+          <div class="p-5 space-y-4">
+            <!-- Random Vancomycin Level Result -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Resulted Vancomycin Random Level (mcg/mL)</label>
+              <div class="relative">
+                <input id="randomLevel" type="number" step="0.1" min="0" max="100" placeholder="e.g., 14.2" oninput="recalculateAll()"
+                  class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base font-bold text-slate-900 placeholder:font-normal placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" />
+                <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400">mcg/mL</span>
+              </div>
+              <!-- Quick Level Presets -->
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <button type="button" onclick="setFollowupLevel(21.4)" class="text-[11px] px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-semibold">21.4 (≥ 18 Hold)</button>
+                <button type="button" onclick="setFollowupLevel(14.2)" class="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-semibold">14.2 (&lt; 18 Re-dose)</button>
+                <button type="button" onclick="setFollowupLevel(9.5)" class="text-[11px] px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 font-semibold">9.5 (&lt; 18 Low)</button>
+              </div>
+            </div>
+
+            <!-- Date & Time Calculator for Last Dose vs Level Draw -->
+            <div id="elapsedTimeBox" class="rounded-xl bg-slate-50 border border-slate-200/90 p-3.5 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-800">Time Elapsed: Last Dose → Level Draw</span>
+                <span id="elapsedHoursBadge" class="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800">
+                  16.0 hrs
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-1">Last Vancomycin Dose Given</label>
+                  <input id="lastDoseDateTime" type="datetime-local" onchange="recalculateAll()"
+                    class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-1">Level Drawn Date &amp; Time</label>
+                  <input id="levelDrawDateTime" type="datetime-local" onchange="recalculateAll()"
+                    class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+                </div>
+              </div>
+
+              <!-- Quick Elapsed Time Helpers -->
+              <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+                <span class="text-[11px] text-slate-500">Quick window:</span>
+                <button type="button" onclick="setElapsedHoursPreset(16)" class="text-[11px] px-2 py-0.5 rounded bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-medium">16h ago (&lt; 24h → 15 mg/kg)</button>
+                <button type="button" onclick="setElapsedHoursPreset(28)" class="text-[11px] px-2 py-0.5 rounded bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-medium">28h ago (≥ 24h → 10 mg/kg)</button>
+              </div>
+            </div>
+
+            <!-- Re-Dose Strategy Override (Auto vs Force 15 mg/kg vs Force 10 mg/kg) -->
+            <div id="followupDoseOverrideWrapper">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Re-Dose Regimen Strategy (When Level &lt; 18 mcg/mL)</label>
+              <select id="followupDoseOverride" onchange="recalculateAll()"
+                class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                <option value="auto">Auto-Select Based on Elapsed Time (&lt; 24h → 15 mg/kg | ≥ 24h → 10 mg/kg)</option>
+                <option value="force_15">Force 15 mg/kg × 1 (Clinical Override)</option>
+                <option value="force_10">Force 10 mg/kg × 1 (Clinical Override)</option>
+              </select>
+            </div>
+
+            <!-- Planned Re-Dose Date & Time (for Auto Timed vs AM Lab Logic) -->
+            <div id="followupRedoseTimeWrapper" class="pt-1 border-t border-slate-100">
+              <label class="block text-xs font-semibold text-slate-700 mb-1.5">Planned Re-Dose Administration Date &amp; Time</label>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <span class="block text-[11px] text-slate-500 mb-1">Re-Dose Date</span>
+                  <input id="followupRedoseDate" type="date" onchange="recalculateAll()"
+                    class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+                </div>
+                <div>
+                  <span class="block text-[11px] text-slate-500 mb-1">Infusion Start Time</span>
+                  <input id="followupRedoseTime" type="time" onchange="recalculateAll()"
+                    class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+                </div>
+              </div>
+              <div class="flex flex-wrap items-center gap-1.5 mt-2">
+                <span class="text-[11px] text-slate-500 mr-1">Quick test:</span>
+                <button type="button" onclick="setFollowupPresetTime('10:00')" class="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">10:00 AM (Daytime)</button>
+                <button type="button" onclick="setFollowupPresetTime('18:00')" class="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">6:00 PM (Evening)</button>
+                <button type="button" onclick="setFollowupPresetTime('23:30')" class="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">11:30 PM (Late Night)</button>
+              </div>
+            </div>
+
+            <!-- Next Level Timing Option for Follow-Up -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Next Follow-Up Lab Schedule</label>
+              <select id="followupNextLabMode" onchange="recalculateAll()"
+                class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                <option value="auto">Auto-Select Based on Re-Dose Time &amp; CrCl (Recommended)</option>
+                <option value="am_next">Random Level with Next AM Labs</option>
+                <option value="timed_12h">Timed Level — 12 Hours Post-Dose</option>
+                <option value="timed_24h">Timed Level — 24 Hours Post-Dose</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Card 3: PSH Step 3b Quick Reference Matrix (Collapsible, collapsed by default) -->
+        <section onclick="toggleCollapsibleCard('protocolBody', 'protocolChevron')"
+          class="bg-slate-100/80 hover:bg-slate-100 rounded-2xl border border-slate-200/90 p-4 text-xs text-slate-700 cursor-pointer select-none transition-colors">
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">PSH Step 3b Reference Protocol</h3>
+            <svg id="protocolChevron" class="w-4 h-4 text-slate-500 transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+          <div id="protocolBody" class="hidden mt-3 pt-3 border-t border-slate-200/90 space-y-2.5">
+            <div class="flex items-start gap-2">
+              <span class="font-bold text-blue-700 shrink-0">i. Initial:</span>
+              <span>If LD indicated in AKI/CrCl &lt;30: <strong>Modified LD (~20–25 mg/kg TBW table, max 3000 mg) × 1</strong>. If LD not indicated: <strong>15 mg/kg × 1</strong> (rounded to nearest 250 mg, max 2000 mg).</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="font-bold text-blue-700 shrink-0">ii. Levels:</span>
+              <span>Random level with <strong>AM labs the following day</strong> for daytime doses, or a <strong>timed level (12h vs. 24h by CrCl)</strong> if given after 17:00 up until 05:00.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="font-bold text-blue-700 shrink-0">iii. Adjust:</span>
+              <div>
+                <div>• <strong>Level ≥ 18 mcg/mL:</strong> No vancomycin re-dose; check random level next AM labs.</div>
+                <div class="mt-0.5">• <strong>Level &lt; 18 mcg/mL:</strong> Last dose <strong>&lt; 24h</strong> → re-dose <strong>15 mg/kg × 1</strong>; Last dose <strong>≥ 24h</strong> → re-dose <strong>10 mg/kg × 1</strong>.</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="font-bold text-blue-700 shrink-0">iv. Ongoing:</span>
+              <span>Daily random levels with AM labs. Once renal function stabilizes, transition to scheduled dosing &amp; DoseMeRx AUC monitoring.</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT COLUMN: CLINICAL ACTION PLAN, CALCULATED ORDERS & EPIC i-VENT (7 cols) -->
+      <div class="lg:col-span-7 space-y-5">
+
+        <!-- Primary Recommendation Hero Card -->
+        <section id="recommendationCard" class="bg-white rounded-2xl border-2 border-blue-600/90 shadow-md overflow-hidden">
+          <div class="bg-gradient-to-r from-[#001E44] to-blue-900 px-6 py-4 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <span id="recStepTag" class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-500/30 text-blue-100 border border-blue-400/30">
+                Step 3b • Initial Dosing &amp; Level Order
+              </span>
+              <h2 id="recHeadline" class="text-lg sm:text-xl font-extrabold mt-1.5 tracking-tight">
+                Enter Weight to Calculate Modified Loading Dose
+              </h2>
+            </div>
+            <div class="text-left sm:text-right shrink-0">
+              <div class="text-[11px] text-blue-200 uppercase font-semibold">Infusion Duration</div>
+              <div id="recInfusionTime" class="text-sm font-bold text-white">Enter weight</div>
+            </div>
+          </div>
+
+          <div class="p-6 space-y-5">
+            <!-- 3-Step Action Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+              <!-- Box 1: Medication Order -->
+              <div class="rounded-xl bg-blue-50/70 border border-blue-200 p-4">
+                <div class="text-[11px] font-bold uppercase tracking-wider text-blue-700">1. Vancomycin Order</div>
+                <div id="boxDosePrimary" class="text-lg font-extrabold text-slate-900 mt-1">Modified LD (~20–25 mg/kg)</div>
+                <div id="boxDoseSub" class="text-xs text-slate-600 mt-1 leading-snug">
+                  Enter actual body weight (kg) above to auto-calculate exact PSH dose.
+                </div>
+              </div>
+
+              <!-- Box 2: Lab Timing Order -->
+              <div class="rounded-xl bg-indigo-50/70 border border-indigo-200 p-4">
+                <div class="text-[11px] font-bold uppercase tracking-wider text-indigo-700">2. Level Draw Timing</div>
+                <div id="boxLabPrimary" class="text-base font-extrabold text-slate-900 mt-1">AM Labs Next Day</div>
+                <div id="boxLabSub" class="text-xs text-slate-600 mt-1 leading-snug">
+                  Order Vancomycin, Random with morning labs (or timed 12h/24h level if given between 17:00 and 05:00).
+                </div>
+              </div>
+
+              <!-- Box 3: Ongoing Monitoring -->
+              <div class="rounded-xl bg-emerald-50/70 border border-emerald-200 p-4">
+                <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">3. Ongoing Monitoring</div>
+                <div id="boxOngoingPrimary" class="text-base font-extrabold text-slate-900 mt-1">Daily AM Random</div>
+                <div id="boxOngoingSub" class="text-xs text-slate-600 mt-1 leading-snug">
+                  Re-dose only when level &lt; 18 mcg/mL. Switch to DoseMeRx once SCr/UOP stabilizes.
+                </div>
+              </div>
+            </div>
+
+            <!-- Detailed Clinical Rationale & Timing Breakdown -->
+            <div id="rationaleCallout" class="rounded-xl bg-slate-50 border border-slate-200/90 p-4 space-y-2">
+              <div class="flex items-center gap-2 text-xs font-bold text-slate-800">
+                <svg class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span id="rationaleTitle">Clinical Timing &amp; Infusion Window Verification</span>
+              </div>
+              <p id="rationaleBody" class="text-xs text-slate-600 leading-relaxed">
+                Infusion ends at 16:00. Next morning AM labs (~05:00–06:00) occur ~13 hours post-infusion (well past the 2-hour post-distribution minimum).
+              </p>
+            </div>
+
+            <!-- Evening / Timed Lab Decision Matrix -->
+            <div id="eveningMatrixCard" class="rounded-xl border border-slate-200 overflow-hidden">
+              <div class="px-4 py-2.5 bg-slate-100/80 border-b border-slate-200 flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-700">After-Hours Administration Timed Lab Rule (&gt; 17:00 to 05:00, by CrCl)</span>
+                <span id="crclRuleTag" class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-800">Est. CrCl: --</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 text-xs">
+                <div id="ruleCrclHigh" class="p-3.5 transition-colors bg-white">
+                  <div class="font-bold text-slate-800">CrCl ≥ 40 mL/min (or Rapid Recovery)</div>
+                  <div class="text-slate-600 mt-1">Order timed random level <span class="font-bold text-blue-700">12 hours</span> after dose when administered after 17:00 up until 05:00.</div>
+                </div>
+                <div id="ruleCrclLow" class="p-3.5 transition-colors bg-white">
+                  <div class="font-bold text-slate-800">CrCl &lt; 40 mL/min / Significant AKI</div>
+                  <div class="text-slate-700 mt-1">Order timed random level <span class="font-bold text-blue-700">24 hours</span> after dose when administered after 17:00 up until 05:00.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Ongoing Monitoring & Transition to Scheduled Therapy Checklist (Collapsible, collapsed by default) -->
+        <section onclick="toggleCollapsibleCard('ongoingBody', 'ongoingChevron')"
+          class="bg-white hover:bg-slate-50/70 rounded-2xl border border-slate-200/90 shadow-sm p-5 cursor-pointer select-none transition-colors">
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Step 3b-iv: Ongoing Monitoring &amp; Transition Criteria
+            </h3>
+            <svg id="ongoingChevron" class="w-4 h-4 text-slate-500 transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+          <div id="ongoingBody" class="hidden mt-3.5 pt-3.5 border-t border-slate-200/80 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+              <div class="font-bold text-slate-800">While Renal Function Remains Unstable</div>
+              <ul class="mt-1.5 space-y-1 text-slate-600 list-disc list-inside">
+                <li>Continue daily random vancomycin levels with AM labs.</li>
+                <li>Keep <span class="font-semibold text-slate-800">vancomycin (dosed by levels) placeholder</span> active.</li>
+                <li>Never schedule standing maintenance doses until SCr/UOP trends stabilize.</li>
+                <li>Re-dose only when serum concentration is <span class="font-bold text-emerald-700">&lt; 18 mcg/mL</span>.</li>
+              </ul>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+              <div class="font-bold text-slate-800">When Renal Function Stabilizes</div>
+              <ul class="mt-1.5 space-y-1 text-slate-600 list-disc list-inside">
+                <li>Discontinue the dosed-by-levels placeholder order.</li>
+                <li>Transition to scheduled maintenance dosing (e.g., Q24H or per DoseMeRx).</li>
+                <li>Switch to <span class="font-semibold text-blue-700">DoseMeRx AUC₂₄ (400–600 mg·h/L)</span> monitoring.</li>
+                <li>If ESRD not on HD at baseline SCr, establish standing schedule once levels predictable.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Epic i-Vent Documentation Generator Card -->
+        <section class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+          <div class="px-5 py-3.5 bg-slate-50/80 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              <h3 class="text-sm font-bold text-slate-800">EPIC Pharmacokinetic i-Vent Note (PSH Plan)</h3>
+            </div>
+            <button id="copyBtn" type="button" onclick="copyIventToClipboard()"
+              class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#001E44] hover:bg-blue-900 text-white text-xs font-semibold shadow-sm transition-all active:scale-95">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+              </svg>
+              <span id="copyBtnText">Copy i-Vent Note</span>
+            </button>
+          </div>
+          <div class="p-4">
+            <textarea id="iventOutput" rows="12" readonly
+              class="w-full rounded-xl bg-slate-900 text-slate-100 font-mono text-xs p-4 leading-relaxed focus:outline-none border border-slate-700"></textarea>
+            <div id="copyFeedback" class="hidden mt-2 text-xs font-semibold text-emerald-700 flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Copied to clipboard — ready to paste into EPIC i-Vent!
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Global application state
+    const state = {
+      mode: 'initial', // 'initial' | 'followup'
+      ldIndicated: true,
+      ldTier: 'modified' // 'modified' (PSH AKI/CrCl <30/Obese table) | 'standard' (~25 mg/kg table)
+    };
+
+    function toggleCollapsibleCard(bodyId, chevronId) {
+      const body = document.getElementById(bodyId);
+      const chevron = document.getElementById(chevronId);
+      if (!body) return;
+      const isHidden = body.classList.contains('hidden');
+      if (isHidden) {
+        body.classList.remove('hidden');
+        if (chevron) chevron.classList.add('rotate-180');
+      } else {
+        body.classList.add('hidden');
+        if (chevron) chevron.classList.remove('rotate-180');
+      }
+    }
+
+    // Initialize default dates/times on load
+    window.addEventListener('DOMContentLoaded', () => {
+      const now = new Date();
+      const nextHourDt = new Date(now.getTime());
+      nextHourDt.setHours(nextHourDt.getHours() + 1, 0, 0, 0);
+
+      document.getElementById('initDoseDate').value = formatDateInput(nextHourDt);
+      document.getElementById('initDoseTime').value = formatTimeInput(nextHourDt);
+      document.getElementById('followupRedoseDate').value = formatDateInput(nextHourDt);
+      document.getElementById('followupRedoseTime').value = formatTimeInput(nextHourDt);
+
+      // Default follow-up timestamps: last dose 16 hours ago, level drawn now
+      const sixteenHoursAgo = new Date(now.getTime() - 16 * 60 * 60 * 1000);
+      document.getElementById('lastDoseDateTime').value = formatDateTimeLocal(sixteenHoursAgo);
+      document.getElementById('levelDrawDateTime').value = formatDateTimeLocal(now);
+
+      recalculateAll();
+    });
+
+    function formatDateInput(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function formatTimeInput(dateObj) {
+      const hh = String(dateObj.getHours()).padStart(2, '0');
+      const mm = String(dateObj.getMinutes()).padStart(2, '0');
+      return `${hh}:${mm}`;
+    }
+
+    function formatDateTimeLocal(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      const hh = String(dateObj.getHours()).padStart(2, '0');
+      const mm = String(dateObj.getMinutes()).padStart(2, '0');
+      return `${y}-${m}-${d}T${hh}:${mm}`;
+    }
+
+    function formatFriendlyTime(dateObj) {
+      return dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+
+    function formatFriendlyDate(dateObj) {
+      return dateObj.toLocaleDateString([], { month: '2-digit', day: '2-digit' });
+    }
+
+    // Round mg to nearest 250 mg with min 500 mg and configurable max
+    function roundVancoDose(rawMg, maxMg) {
+      const rounded = Math.round(rawMg / 250) * 250;
+      return Math.min(Math.max(rounded, 500), maxMg);
+    }
+
+    // Exact PSH Step 1 Modified Loading Dose (~20-25 mg/kg TBW) for AKI, CrCl <30, BMI >=30, HD
+    function getModifiedLoadingDose(tbw) {
+      if (tbw < 36) return roundVancoDose(tbw * 20, 3000);
+      if (tbw <= 45.9) return 750;
+      if (tbw <= 55.9) return 1000;
+      if (tbw <= 65.9) return 1250;
+      if (tbw <= 75.9) return 1500;
+      if (tbw <= 90.9) return 1750;
+      if (tbw <= 99.9) return 2000;
+      if (tbw <= 109.9) return 2250;
+      if (tbw <= 129.9) return 2500;
+      if (tbw <= 149.9) return 2750;
+      return 3000; // >= 150 kg
+    }
+
+    // Exact PSH Step 1 Standard Loading Dose (~25 mg/kg TBW)
+    function getStandardLoadingDose(tbw) {
+      if (tbw < 36) return roundVancoDose(tbw * 25, 3000);
+      if (tbw <= 45.9) return 1000;
+      if (tbw <= 55.9) return 1250;
+      if (tbw <= 65.9) return 1500;
+      if (tbw <= 75.9) return 1750;
+      if (tbw <= 90.9) return 2000;
+      if (tbw <= 99.9) return 2250;
+      if (tbw <= 109.9) return 2500;
+      if (tbw <= 119.9) return 2750;
+      return 3000; // >= 120 kg
+    }
+
+    // Standard PSH infusion duration rule
+    function getInfusionMinutes(doseMg) {
+      if (doseMg <= 1000) return 60;
+      if (doseMg <= 1500) return 90;
+      if (doseMg <= 2000) return 120;
+      return 150; // > 2000 mg (e.g., 2250-3000 mg) over 2.5 hrs (150 min)
+    }
+
+    // Calculate timed lab timestamp: :00-:29 -> XX:00 + 12/24h; :30-:59 -> (XX+1):00 + 12/24h
+    function calculateTimedLabDate(startDt, offsetHours) {
+      const baseHourDt = new Date(startDt.getTime());
+      const mins = baseHourDt.getMinutes();
+      if (mins >= 30) {
+        baseHourDt.setHours(baseHourDt.getHours() + 1, 0, 0, 0);
+      } else {
+        baseHourDt.setMinutes(0, 0, 0);
+      }
+      return new Date(baseHourDt.getTime() + offsetHours * 60 * 60 * 1000);
+    }
+
+    function setEncounterMode(mode) {
+      state.mode = mode;
+      const btnInit = document.getElementById('btnModeInitial');
+      const btnFoll = document.getElementById('btnModeFollowup');
+      const panelInit = document.getElementById('panelInitialInputs');
+      const panelFoll = document.getElementById('panelFollowupInputs');
+
+      if (mode === 'initial') {
+        btnInit.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-sm';
+        btnFoll.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-blue-200 hover:text-white';
+        panelInit.classList.remove('hidden');
+        panelFoll.classList.add('hidden');
+      } else {
+        btnFoll.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow-sm';
+        btnInit.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-blue-200 hover:text-white';
+        panelFoll.classList.remove('hidden');
+        panelInit.classList.add('hidden');
+      }
+      recalculateAll();
+    }
+
+    function setLdIndicated(isIndicated) {
+      state.ldIndicated = isIndicated;
+      const btnYes = document.getElementById('btnLdYes');
+      const btnNo = document.getElementById('btnLdNo');
+      const ldWrapper = document.getElementById('ldTargetWrapper');
+
+      if (isIndicated) {
+        btnYes.className = 'p-3 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition-all';
+        btnYes.querySelector('div:first-child').className = 'text-xs font-bold text-blue-900';
+        btnNo.className = 'p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition-all';
+        btnNo.querySelector('div:first-child').className = 'text-xs font-bold text-slate-800';
+        ldWrapper.classList.remove('hidden');
+      } else {
+        btnNo.className = 'p-3 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition-all';
+        btnNo.querySelector('div:first-child').className = 'text-xs font-bold text-blue-900';
+        btnYes.className = 'p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition-all';
+        btnYes.querySelector('div:first-child').className = 'text-xs font-bold text-slate-800';
+        ldWrapper.classList.add('hidden');
+      }
+      recalculateAll();
+    }
+
+    function setLdTier(tier) {
+      state.ldTier = tier;
+      document.getElementById('ldTargetBadge').textContent =
+        tier === 'modified' ? 'Modified (~20–25 mg/kg)' : 'Standard (~25 mg/kg)';
+      const btnMod = document.getElementById('btnLdModified');
+      const btnStd = document.getElementById('btnLdStandard');
+      if (tier === 'modified') {
+        btnMod.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-sm';
+        btnStd.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-100';
+      } else {
+        btnStd.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-sm';
+        btnMod.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-100';
+      }
+      recalculateAll();
+    }
+
+    function setInitPresetTime(timeStr) {
+      document.getElementById('initDoseTime').value = timeStr;
+      recalculateAll();
+    }
+
+    function setFollowupPresetTime(timeStr) {
+      document.getElementById('followupRedoseTime').value = timeStr;
+      recalculateAll();
+    }
+
+    function setFollowupLevel(val) {
+      document.getElementById('randomLevel').value = val;
+      recalculateAll();
+    }
+
+    function setElapsedHoursPreset(hoursAgo) {
+      const levelVal = document.getElementById('levelDrawDateTime').value;
+      const refDate = levelVal ? new Date(levelVal) : new Date();
+      const doseDate = new Date(refDate.getTime() - hoursAgo * 60 * 60 * 1000);
+      document.getElementById('lastDoseDateTime').value = formatDateTimeLocal(doseDate);
+      recalculateAll();
+    }
+
+    function resetForm() {
+      document.getElementById('weightKg').value = '';
+      document.getElementById('heightCm').value = '';
+      document.getElementById('ageYrs').value = '';
+      document.getElementById('sex').value = '';
+      document.getElementById('scr').value = '';
+      document.getElementById('akiContext').value = 'aki_new';
+      document.getElementById('labTimingStrategy').value = 'auto';
+      document.getElementById('randomLevel').value = '';
+      document.getElementById('followupDoseOverride').value = 'auto';
+      document.getElementById('followupNextLabMode').value = 'auto';
+
+      const now = new Date();
+      const nextHourDt = new Date(now.getTime());
+      nextHourDt.setHours(nextHourDt.getHours() + 1, 0, 0, 0);
+
+      document.getElementById('initDoseDate').value = formatDateInput(nextHourDt);
+      document.getElementById('initDoseTime').value = formatTimeInput(nextHourDt);
+      document.getElementById('followupRedoseDate').value = formatDateInput(nextHourDt);
+      document.getElementById('followupRedoseTime').value = formatTimeInput(nextHourDt);
+      const sixteenHoursAgo = new Date(now.getTime() - 16 * 60 * 60 * 1000);
+      document.getElementById('lastDoseDateTime').value = formatDateTimeLocal(sixteenHoursAgo);
+      document.getElementById('levelDrawDateTime').value = formatDateTimeLocal(now);
+
+      setLdIndicated(true);
+      setLdTier('modified');
+      recalculateAll();
+    }
+
+    function recalculateAll() {
+      const rawTbw = parseFloat(document.getElementById('weightKg').value);
+      const rawHeight = parseFloat(document.getElementById('heightCm').value);
+      const rawAge = parseFloat(document.getElementById('ageYrs').value);
+      const sex = document.getElementById('sex').value;
+      const rawScr = parseFloat(document.getElementById('scr').value);
+      const akiContext = document.getElementById('akiContext').value;
+
+      const hasTbw = !isNaN(rawTbw) && rawTbw >= 20;
+      const hasHeight = !isNaN(rawHeight) && rawHeight >= 100;
+      const hasAge = !isNaN(rawAge) && rawAge >= 18;
+      const hasSex = sex === 'M' || sex === 'F';
+      const hasScr = !isNaN(rawScr) && rawScr >= 0.2;
+
+      // BMI
+      if (hasTbw && hasHeight) {
+        const heightM = rawHeight / 100;
+        const bmi = rawTbw / (heightM * heightM);
+        document.getElementById('dispBmi').textContent = `${bmi.toFixed(1)} kg/m²`;
+      } else {
+        document.getElementById('dispBmi').textContent = '--';
+      }
+
+      // IBW & AdjBW
+      let ibw = null;
+      let adjBw = null;
+      if (hasHeight && hasSex) {
+        const heightInches = rawHeight / 2.54;
+        const baseIbw = sex === 'M' ? 50 : 45.5;
+        ibw = Math.max(35, baseIbw + 2.3 * Math.max(0, heightInches - 60));
+        if (hasTbw) {
+          adjBw = ibw + 0.4 * (rawTbw - ibw);
+          document.getElementById('dispIbw').textContent = `${ibw.toFixed(1)} / ${adjBw.toFixed(1)} kg`;
+        } else {
+          document.getElementById('dispIbw').textContent = `${ibw.toFixed(1)} / -- kg`;
+        }
+      } else {
+        document.getElementById('dispIbw').textContent = '--';
+      }
+
+      // Cockcroft-Gault CrCl
+      let crclRounded = null;
+      const ruleHigh = document.getElementById('ruleCrclHigh');
+      const ruleLow = document.getElementById('ruleCrclLow');
+
+      if (hasTbw && hasAge && hasSex && hasScr) {
+        let dosingWeightForCrCl = rawTbw;
+        if (hasHeight && ibw !== null) {
+          const heightM = rawHeight / 100;
+          const bmi = rawTbw / (heightM * heightM);
+          if (rawTbw < ibw) {
+            dosingWeightForCrCl = rawTbw;
+          } else if (bmi >= 30 || rawTbw > 1.2 * ibw) {
+            dosingWeightForCrCl = adjBw;
+          } else {
+            dosingWeightForCrCl = ibw;
+          }
+        }
+        let crcl = ((140 - rawAge) * dosingWeightForCrCl) / (72 * rawScr);
+        if (sex === 'F') crcl *= 0.85;
+        crclRounded = Math.round(crcl);
+
+        document.getElementById('dispCrCl').textContent = `${crclRounded} mL/min`;
+        document.getElementById('crclRuleTag').textContent = `Est. CrCl: ${crclRounded} mL/min`;
+
+        if (crclRounded >= 40) {
+          ruleHigh.className = 'p-3.5 transition-colors bg-blue-50/80';
+          ruleHigh.querySelector('div:first-child').className = 'font-bold text-blue-900';
+          ruleLow.className = 'p-3.5 transition-colors bg-white';
+          ruleLow.querySelector('div:first-child').className = 'font-bold text-slate-800';
+        } else {
+          ruleLow.className = 'p-3.5 transition-colors bg-blue-50/80';
+          ruleLow.querySelector('div:first-child').className = 'font-bold text-blue-900';
+          ruleHigh.className = 'p-3.5 transition-colors bg-white';
+          ruleHigh.querySelector('div:first-child').className = 'font-bold text-slate-800';
+        }
+      } else {
+        document.getElementById('dispCrCl').textContent = '--';
+        document.getElementById('crclRuleTag').textContent = 'Est. CrCl: --';
+        ruleHigh.className = 'p-3.5 transition-colors bg-white';
+        ruleHigh.querySelector('div:first-child').className = 'font-bold text-slate-800';
+        ruleLow.className = 'p-3.5 transition-colors bg-white';
+        ruleLow.querySelector('div:first-child').className = 'font-bold text-slate-800';
+      }
+
+      if (state.mode === 'initial') {
+        renderInitialPlan(hasTbw ? rawTbw : null, crclRounded, akiContext);
+      } else {
+        renderFollowupPlan(hasTbw ? rawTbw : null, crclRounded, akiContext);
+      }
+    }
+
+    function renderInitialPlan(tbw, crclRounded, akiContext) {
+      const isModifiedLd = state.ldIndicated && state.ldTier === 'modified';
+      const maxCap = state.ldIndicated ? 3000 : 2000;
+      const hasWeight = tbw !== null;
+
+      let finalDose = null;
+      let effectiveMgKg = null;
+      if (hasWeight) {
+        if (!state.ldIndicated) {
+          finalDose = roundVancoDose(tbw * 15, 2000);
+        } else if (isModifiedLd) {
+          finalDose = getModifiedLoadingDose(tbw);
+        } else {
+          finalDose = getStandardLoadingDose(tbw);
+        }
+        effectiveMgKg = (finalDose / tbw).toFixed(1);
+      }
+      const infusionMin = hasWeight ? getInfusionMinutes(finalDose) : 120;
+
+      // Parse admin date & time
+      const dateStr = document.getElementById('initDoseDate').value || formatDateInput(new Date());
+      const timeStr = document.getElementById('initDoseTime').value || '14:00';
+      const startDt = new Date(`${dateStr}T${timeStr}`);
+      const endInfusionDt = new Date(startDt.getTime() + infusionMin * 60 * 1000);
+
+      // Next morning AM labs benchmark (05:30 next calendar day)
+      const nextMorningDt = new Date(startDt);
+      nextMorningDt.setDate(nextMorningDt.getDate() + 1);
+      nextMorningDt.setHours(5, 30, 0, 0);
+
+      const startHour = startDt.getHours() + startDt.getMinutes() / 60;
+
+      // Determine whether dose is given after 17:00 up until 05:00, or manually forced to 12h/24h
+      const strategyOverride = document.getElementById('labTimingStrategy').value;
+      const isAfterHoursWindow = startHour > 17.0 || startHour <= 5.0;
+      const isManual12h = strategyOverride === 'timed_12h';
+      const isManual24h = strategyOverride === 'timed_24h';
+      const useTimedEveningLab =
+        isManual12h ||
+        isManual24h ||
+        (strategyOverride === 'auto' && isAfterHoursWindow);
+
+      // Timed interval: manual 12h/24h override takes precedence, otherwise 12h if CrCl >= 40, 24h if CrCl < 40
+      const hasCrCl = crclRounded !== null;
+      const timedHours = isManual12h
+        ? 12
+        : isManual24h
+          ? 24
+          : hasCrCl
+            ? (crclRounded >= 40 ? 12 : 24)
+            : null;
+      const isManualTimedOverride = isManual12h || isManual24h;
+      const timedLabDt = timedHours ? calculateTimedLabDate(startDt, timedHours) : null;
+
+      // Update Hero Card
+      const recCard = document.getElementById('recommendationCard');
+      recCard.className = 'bg-white rounded-2xl border-2 border-blue-600/90 shadow-md overflow-hidden';
+
+      document.getElementById('recStepTag').textContent = !state.ldIndicated
+        ? 'Step 3b-i • No Loading Dose (15 mg/kg × 1)'
+        : isModifiedLd
+          ? 'Step 1 & 3b-i • Modified Loading Dose (AKI / CrCl < 30)'
+          : 'Step 1 & 3b-i • Standard Loading Dose (~25 mg/kg)';
+
+      if (hasWeight) {
+        document.getElementById('recHeadline').textContent = !state.ldIndicated
+          ? `Administer Initial Dose: ${finalDose.toLocaleString()} mg IV × 1`
+          : isModifiedLd
+            ? `Administer Modified Loading Dose: ${finalDose.toLocaleString()} mg IV × 1`
+            : `Administer Standard Loading Dose: ${finalDose.toLocaleString()} mg IV × 1`;
+        document.getElementById('recInfusionTime').textContent = `Infuse over ${infusionMin} min`;
+        document.getElementById('boxDosePrimary').textContent = `${finalDose.toLocaleString()} mg IV × 1`;
+        document.getElementById('boxDoseSub').textContent = !state.ldIndicated
+          ? `15 mg/kg × ${tbw} kg = ${Math.round(tbw * 15)} mg → rounded to nearest 250 mg (Max 2,000 mg). Plus dosed-by-levels placeholder.`
+          : isModifiedLd
+            ? `PSH Modified LD table for ${tbw} kg (${effectiveMgKg} mg/kg; ~20–25 mg/kg tier for AKI/CrCl <30/Obese, max 3,000 mg). Plus dosed-by-levels placeholder.`
+            : `PSH Standard LD table for ${tbw} kg (${effectiveMgKg} mg/kg; ~25 mg/kg tier, max 3,000 mg). Plus dosed-by-levels placeholder.`;
+      } else {
+        const tierLabel = !state.ldIndicated
+          ? 'Initial Dose (15 mg/kg × 1)'
+          : isModifiedLd
+            ? 'Modified Loading Dose (~20–25 mg/kg Table)'
+            : 'Standard Loading Dose (~25 mg/kg Table)';
+        document.getElementById('recHeadline').textContent = `Enter Weight to Calculate ${tierLabel}`;
+        document.getElementById('recInfusionTime').textContent = 'Enter weight';
+        document.getElementById('boxDosePrimary').textContent = !state.ldIndicated
+          ? '15 mg/kg × 1'
+          : isModifiedLd
+            ? 'Modified LD (~20–25 mg/kg)'
+            : 'Standard LD (~25 mg/kg)';
+        document.getElementById('boxDoseSub').textContent =
+          `Enter actual body weight (kg) above to auto-calculate exact PSH dose (max ${maxCap.toLocaleString()} mg).`;
+      }
+
+      // Box 2: Lab Timing
+      let labPlanShort = '';
+      let labPlanDetail = '';
+      let iventLabLine = '';
+
+      if (!useTimedEveningLab) {
+        labPlanShort = `Random Level w/ AM Labs (${formatFriendlyDate(nextMorningDt)})`;
+        labPlanDetail = `Draw with morning labs tomorrow (~05:30 on ${formatFriendlyDate(nextMorningDt)}) per PSH daytime dose-by-level workflow.`;
+        iventLabLine = `Order Vancomycin, Random level with AM labs tomorrow morning (${formatFriendlyDate(nextMorningDt)}).`;
+      } else if (timedHours !== null) {
+        const timingReason = isManualTimedOverride
+          ? `Manually selected ${timedHours}-hour timed level`
+          : `Dose given after 17:00–05:00 (${formatFriendlyTime(startDt)}): CrCl is ${crclRounded} mL/min (${crclRounded >= 40 ? '≥ 40' : '< 40'} mL/min)`;
+        const iventReason = isManualTimedOverride
+          ? `based on clinical assessment`
+          : `based on CrCl ${crclRounded} mL/min`;
+        labPlanShort = `Timed Random Level in ${timedHours}h (${formatFriendlyDate(timedLabDt)} ${formatFriendlyTime(timedLabDt)})`;
+        labPlanDetail = `${timingReason} — draw timed level ${timedHours} hours post-dose on ${formatFriendlyDate(timedLabDt)} at ${formatFriendlyTime(timedLabDt)}.`;
+        iventLabLine = `Order timed Vancomycin, Random level ${timedHours} hours post-dose on ${formatFriendlyDate(timedLabDt)} at ${formatFriendlyTime(timedLabDt)} (${iventReason}).`;
+      } else {
+        labPlanShort = 'Timed Random Level (12h or 24h)';
+        labPlanDetail = `Dose given after 17:00 up until 05:00 (${formatFriendlyTime(startDt)}): order a timed level at 12 hours or 24 hours post-dose (enter Age, Height, Sex, and SCr to auto-select 12h vs. 24h by CrCl, or select manually above).`;
+        iventLabLine = `Dose administered after 17:00–05:00 (${formatFriendlyTime(startDt)}); order timed Vancomycin, Random level in 12 hours or 24 hours post-dose (12h if CrCl ≥ 40 mL/min; 24h if CrCl < 40 mL/min).`;
+      }
+
+      document.getElementById('boxLabPrimary').textContent = labPlanShort;
+      document.getElementById('boxLabSub').textContent = labPlanDetail;
+
+      // Box 3: Ongoing
+      document.getElementById('boxOngoingPrimary').textContent = 'Re-Dose Only if < 18 mcg/mL';
+      document.getElementById('boxOngoingSub').textContent =
+        'Hold if ≥ 18 mcg/mL. Follow daily AM random levels & SCr/UOP; transition to DoseMeRx once renal function stabilizes.';
+
+      // Rationale Callout
+      document.getElementById('rationaleTitle').textContent = useTimedEveningLab
+        ? isManualTimedOverride
+          ? `Manual Timed Level Selected → ${timedHours}-Hour Post-Dose Draw`
+          : `After-Hours Administration (${formatFriendlyTime(startDt)}, > 17:00–05:00) → ${hasCrCl ? timedHours + '-Hour' : '12h or 24h'} Timed Level`
+        : `Daytime Administration (${formatFriendlyTime(startDt)}) → Next-Day AM Labs Selected`;
+
+      document.getElementById('rationaleBody').textContent = useTimedEveningLab
+        ? isManualTimedOverride
+          ? `Infusion starts at ${formatFriendlyTime(startDt)} and finishes at ${formatFriendlyTime(endInfusionDt)}. Per your manual selection, draw a timed Vancomycin, Random level ${timedHours} hours post-dose on ${formatFriendlyDate(timedLabDt)} at ${formatFriendlyTime(timedLabDt)}.`
+          : `Infusion starts at ${formatFriendlyTime(startDt)} (within the after-hours > 17:00 to 05:00 window), so it does not default to AM labs. Order a timed Vancomycin, Random level at ${hasCrCl ? `${timedHours} hrs on ${formatFriendlyDate(timedLabDt)} at ${formatFriendlyTime(timedLabDt)} (${crclRounded >= 40 ? 'CrCl ≥ 40 mL/min → 12h' : 'CrCl < 40 mL/min → 24h'})` : '12 hours or 24 hours post-dose (enter renal parameters to auto-select 12h for CrCl ≥ 40 mL/min vs. 24h for CrCl < 40 mL/min)'}.`
+        : `Infusion starts at ${formatFriendlyTime(startDt)} (outside the after-hours > 17:00 to 05:00 window) and finishes at ${formatFriendlyTime(endInfusionDt)}. Draw a random vancomycin level with next morning AM labs (~05:30 on ${formatFriendlyDate(nextMorningDt)}).`;
+
+      // Build Initial i-Vent Note (Clean Plan only, zero @...@ tokens)
+      const akiNote =
+        akiContext === 'aki_transition'
+          ? 'Patient developed acute kidney injury during vancomycin therapy; holding scheduled doses and transitioning to dose-by-level protocol.'
+          : 'Unstable/impaired renal function; initiating vancomycin dose-by-level protocol.';
+
+      const doseDisplay = hasWeight ? `${finalDose.toLocaleString()} mg` : '*** mg';
+      const infDisplay = hasWeight ? `${infusionMin} minutes` : '*** minutes';
+      const mgKgDisplay = hasWeight ? `${effectiveMgKg} mg/kg` : (isModifiedLd ? '~20-25 mg/kg' : '~25 mg/kg');
+      const doseDesc = !state.ldIndicated
+        ? `Loading dose not indicated; administer vancomycin ${doseDisplay} IV x 1 (15 mg/kg; rounded to nearest 250 mg, max 2000 mg) over ${infDisplay}.`
+        : isModifiedLd
+          ? `Administer vancomycin ${doseDisplay} IV x 1 modified loading dose (${mgKgDisplay} per PSH AKI/CrCl <30 modified LD table, max 3000 mg) over ${infDisplay}.`
+          : `Administer vancomycin ${doseDisplay} IV x 1 loading dose (${mgKgDisplay} per PSH standard LD table, max 3000 mg) over ${infDisplay}.`;
+
+      const ivent = `Pharmacy Managed Vancomycin - Initial Dosing (Dose by Level)
 
 Assessment / Plan:
 ${akiNote}
@@ -4639,101 +4684,132 @@ ${akiNote}
 4. Goal: Re-dose only when random vancomycin level is < 18 mcg/mL.
 5. Follow daily with AM random levels, SCr, and urine output; transition to scheduled dosing and DoseMeRx AUC monitoring once renal function stabilizes.`;
 
- document.getElementById('iventOutput').value = ivent;
- }
+      document.getElementById('iventOutput').value = ivent;
+    }
 
- function renderFollowupPlan(tbw, crclRounded, akiContext) {
- const rawLevel = parseFloat(document.getElementById('randomLevel').value);
- const hasLevel = !isNaN(rawLevel) && rawLevel >= 0;
- const hasWeight = tbw !== null;
+    function renderFollowupPlan(tbw, crclRounded, akiContext) {
+      const rawLevel = parseFloat(document.getElementById('randomLevel').value);
+      const hasLevel = !isNaN(rawLevel) && rawLevel >= 0;
+      const hasWeight = tbw !== null;
 
- // Calculate elapsed hours between Last Dose and Level Draw
- const lastDoseStr = document.getElementById('lastDoseDateTime').value;
- const drawStr = document.getElementById('levelDrawDateTime').value;
- let elapsedHours = 16.0;
- if (lastDoseStr && drawStr) {
- const d1 = new Date(lastDoseStr);
- const d2 = new Date(drawStr);
- const diff = (d2 - d1) / (1000 * 60 * 60);
- if (!isNaN(diff)) {
- elapsedHours = Math.max(0, diff);
- }
- }
+      // Calculate elapsed hours between Last Dose and Level Draw
+      const lastDoseStr = document.getElementById('lastDoseDateTime').value;
+      const drawStr = document.getElementById('levelDrawDateTime').value;
+      let elapsedHours = 16.0;
+      if (lastDoseStr && drawStr) {
+        const d1 = new Date(lastDoseStr);
+        const d2 = new Date(drawStr);
+        const diff = (d2 - d1) / (1000 * 60 * 60);
+        if (!isNaN(diff)) {
+          elapsedHours = Math.max(0, diff);
+        }
+      }
 
- document.getElementById('elapsedHoursBadge').textContent = `${elapsedHours.toFixed(1)} hrs`;
+      document.getElementById('elapsedHoursBadge').textContent = `${elapsedHours.toFixed(1)} hrs`;
 
- const recCard = document.getElementById('recommendationCard');
- const elapsedBox = document.getElementById('elapsedTimeBox');
- const followupNextLabMode = document.getElementById('followupNextLabMode').value;
- const timedHours = followupNextLabMode === 'timed_12h' ? 12 : followupNextLabMode === 'timed_24h' ? 24 : null;
+      const recCard = document.getElementById('recommendationCard');
+      const elapsedBox = document.getElementById('elapsedTimeBox');
+      const redoseTimeWrapper = document.getElementById('followupRedoseTimeWrapper');
+      const followupNextLabMode = document.getElementById('followupNextLabMode').value;
 
- if (!hasLevel) {
- elapsedBox.classList.remove('opacity-60');
- recCard.className = 'bg-white rounded-2xl border-2 border-indigo-600/90 shadow-md overflow-hidden';
- document.getElementById('recStepTag').textContent = 'Step 3b-iii • Follow-Up Level Evaluation';
- document.getElementById('recHeadline').textContent = 'Enter Resulted Vancomycin Level (mcg/mL)';
- document.getElementById('recInfusionTime').textContent = 'Threshold: 18 mcg/mL';
+      // Parse planned re-dose date & time for auto timed-lab vs AM-lab routing
+      const redoseDateStr = document.getElementById('followupRedoseDate').value || formatDateInput(new Date());
+      const redoseTimeStr = document.getElementById('followupRedoseTime').value || '14:00';
+      const redoseStartDt = new Date(`${redoseDateStr}T${redoseTimeStr}`);
+      const nextMorningDt = new Date(redoseStartDt);
+      nextMorningDt.setDate(nextMorningDt.getDate() + 1);
+      nextMorningDt.setHours(5, 30, 0, 0);
 
- document.getElementById('boxDosePrimary').textContent = 'Pending Level Entry';
- document.getElementById('boxDoseSub').textContent =
- '≥ 18 mcg/mL → Hold re-dose. < 18 mcg/mL → Re-dose 15 mg/kg (< 24h) or 10 mg/kg (≥ 24h).';
+      const redoseStartHour = redoseStartDt.getHours() + redoseStartDt.getMinutes() / 60;
+      const isAfterHoursWindow = redoseStartHour > 17.0 || redoseStartHour <= 5.0;
+      const isManual12h = followupNextLabMode === 'timed_12h';
+      const isManual24h = followupNextLabMode === 'timed_24h';
+      const useTimedEveningLab =
+        isManual12h ||
+        isManual24h ||
+        (followupNextLabMode === 'auto' && isAfterHoursWindow);
 
- document.getElementById('boxLabPrimary').textContent = 'AM Labs / Timed Level';
- document.getElementById('boxLabSub').textContent =
- 'Enter resulted level and patient weight above to generate the exact re-dose order and lab timing.';
+      const hasCrCl = crclRounded !== null;
+      const timedHours = isManual12h
+        ? 12
+        : isManual24h
+          ? 24
+          : hasCrCl
+            ? (crclRounded >= 40 ? 12 : 24)
+            : null;
+      const isManualTimedOverride = isManual12h || isManual24h;
+      const timedLabDt = timedHours ? calculateTimedLabDate(redoseStartDt, timedHours) : null;
 
- document.getElementById('boxOngoingPrimary').textContent = 'Daily AM Monitoring';
- document.getElementById('boxOngoingSub').textContent =
- 'Continue daily random levels with AM labs until renal function stabilizes.';
+      if (!hasLevel) {
+        elapsedBox.classList.remove('opacity-60');
+        redoseTimeWrapper.classList.remove('opacity-60');
+        recCard.className = 'bg-white rounded-2xl border-2 border-indigo-600/90 shadow-md overflow-hidden';
+        document.getElementById('recStepTag').textContent = 'Step 3b-iii • Follow-Up Level Evaluation';
+        document.getElementById('recHeadline').textContent = 'Enter Resulted Vancomycin Level (mcg/mL)';
+        document.getElementById('recInfusionTime').textContent = 'Threshold: 18 mcg/mL';
 
- document.getElementById('rationaleTitle').textContent = 'Awaiting Follow-Up Level Input';
- document.getElementById('rationaleBody').textContent =
- `Elapsed time between last dose and level draw is currently ${elapsedHours.toFixed(1)} hours (${elapsedHours < 24 ? '< 24h → 15 mg/kg tier if < 18 mcg/mL' : '≥ 24h → 10 mg/kg tier if < 18 mcg/mL'}). Enter the resulted level above to populate the recommendation and i-Vent note.`;
+        document.getElementById('boxDosePrimary').textContent = 'Pending Level Entry';
+        document.getElementById('boxDoseSub').textContent =
+          '≥ 18 mcg/mL → Hold re-dose. < 18 mcg/mL → Re-dose 15 mg/kg (< 24h) or 10 mg/kg (≥ 24h).';
 
- document.getElementById('iventOutput').value = `PSH RX Vancomycin Monitoring (Dose by Level)
+        document.getElementById('boxLabPrimary').textContent = 'AM Labs / Timed Level';
+        document.getElementById('boxLabSub').textContent =
+          'Enter resulted level and patient weight above to generate the exact re-dose order and lab timing.';
+
+        document.getElementById('boxOngoingPrimary').textContent = 'Daily AM Monitoring';
+        document.getElementById('boxOngoingSub').textContent =
+          'Continue daily random levels with AM labs until renal function stabilizes.';
+
+        document.getElementById('rationaleTitle').textContent = 'Awaiting Follow-Up Level Input';
+        document.getElementById('rationaleBody').textContent =
+          `Elapsed time between last dose and level draw is currently ${elapsedHours.toFixed(1)} hours (${elapsedHours < 24 ? '< 24h → 15 mg/kg tier if < 18 mcg/mL' : '≥ 24h → 10 mg/kg tier if < 18 mcg/mL'}). Enter the resulted level above to populate the recommendation and i-Vent note.`;
+
+        document.getElementById('iventOutput').value = `PSH RX Vancomycin Monitoring (Dose by Level)
 
 [Enter resulted vancomycin level above to auto-populate assessment and plan]`;
- return;
- }
+        return;
+      }
 
- const validLevel = rawLevel;
- const isHold = validLevel >= 18.0;
- const isUnder24h = elapsedHours < 24.0;
- const doseOverride = document.getElementById('followupDoseOverride').value;
- const doseOverrideWrapper = document.getElementById('followupDoseOverrideWrapper');
+      const validLevel = rawLevel;
+      const isHold = validLevel >= 18.0;
+      const isUnder24h = elapsedHours < 24.0;
+      const doseOverride = document.getElementById('followupDoseOverride').value;
+      const doseOverrideWrapper = document.getElementById('followupDoseOverrideWrapper');
 
- if (isHold) {
- elapsedBox.classList.add('opacity-60');
- doseOverrideWrapper.classList.add('opacity-60');
- } else {
- elapsedBox.classList.remove('opacity-60');
- doseOverrideWrapper.classList.remove('opacity-60');
- }
+      if (isHold) {
+        elapsedBox.classList.add('opacity-60');
+        doseOverrideWrapper.classList.add('opacity-60');
+        redoseTimeWrapper.classList.add('opacity-60');
+      } else {
+        elapsedBox.classList.remove('opacity-60');
+        doseOverrideWrapper.classList.remove('opacity-60');
+        redoseTimeWrapper.classList.remove('opacity-60');
+      }
 
- if (isHold) {
- // LEVEL >= 18 MCG/ML -> HOLD DOSE
- recCard.className = 'bg-white rounded-2xl border-2 border-amber-500 shadow-md overflow-hidden';
- document.getElementById('recStepTag').textContent = 'Step 3b-iii • Random Level ≥ 18 mcg/mL';
- document.getElementById('recHeadline').textContent = `HOLD Vancomycin — No Re-Dose (Level: ${validLevel.toFixed(1)} mcg/mL)`;
- document.getElementById('recInfusionTime').textContent = 'Hold / Do Not Infuse';
+      if (isHold) {
+        // LEVEL >= 18 MCG/ML -> HOLD DOSE
+        recCard.className = 'bg-white rounded-2xl border-2 border-amber-500 shadow-md overflow-hidden';
+        document.getElementById('recStepTag').textContent = 'Step 3b-iii • Random Level ≥ 18 mcg/mL';
+        document.getElementById('recHeadline').textContent = `HOLD Vancomycin — No Re-Dose (Level: ${validLevel.toFixed(1)} mcg/mL)`;
+        document.getElementById('recInfusionTime').textContent = 'Hold / Do Not Infuse';
 
- document.getElementById('boxDosePrimary').textContent = 'No Vancomycin Re-Dose';
- document.getElementById('boxDoseSub').textContent =
- `Level ${validLevel.toFixed(1)} mcg/mL is ≥ 18 mcg/mL threshold. Keep dosed-by-levels placeholder active.`;
+        document.getElementById('boxDosePrimary').textContent = 'No Vancomycin Re-Dose';
+        document.getElementById('boxDoseSub').textContent =
+          `Level ${validLevel.toFixed(1)} mcg/mL is ≥ 18 mcg/mL threshold. Keep dosed-by-levels placeholder active.`;
 
- document.getElementById('boxLabPrimary').textContent = 'Check Random Level Next AM Labs';
- document.getElementById('boxLabSub').textContent =
- 'Order Vancomycin, Random with tomorrow morning AM labs to reassess clearance.';
+        document.getElementById('boxLabPrimary').textContent = 'Check Random Level Next AM Labs';
+        document.getElementById('boxLabSub').textContent =
+          'Order Vancomycin, Random with tomorrow morning AM labs to reassess clearance.';
 
- document.getElementById('boxOngoingPrimary').textContent = 'Daily AM Random Levels';
- document.getElementById('boxOngoingSub').textContent =
- 'Continue daily random levels with AM labs until level falls < 18 mcg/mL or renal function stabilizes.';
+        document.getElementById('boxOngoingPrimary').textContent = 'Daily AM Random Levels';
+        document.getElementById('boxOngoingSub').textContent =
+          'Continue daily random levels with AM labs until level falls < 18 mcg/mL or renal function stabilizes.';
 
- document.getElementById('rationaleTitle').textContent = 'Level ≥ 18 mcg/mL Protocol Action';
- document.getElementById('rationaleBody').textContent =
- `Per PSH Step 3b guidance, when a random vancomycin level is ≥ 18 mcg/mL (${validLevel.toFixed(1)} mcg/mL), do not administer a re-dose. Recheck a random vancomycin level with tomorrow's AM labs alongside daily SCr and urine output.`;
+        document.getElementById('rationaleTitle').textContent = 'Level ≥ 18 mcg/mL Protocol Action';
+        document.getElementById('rationaleBody').textContent =
+          `Per PSH Step 3b guidance, when a random vancomycin level is ≥ 18 mcg/mL (${validLevel.toFixed(1)} mcg/mL), do not administer a re-dose. Recheck a random vancomycin level with tomorrow's AM labs alongside daily SCr and urine output.`;
 
- const iventHold = `PSH RX Vancomycin Monitoring (Dose by Level)
+        const iventHold = `PSH RX Vancomycin Monitoring (Dose by Level)
 
 Assessment / Plan:
 Random vancomycin level is ${validLevel.toFixed(1)} mcg/mL (≥ 18 mcg/mL threshold) in the setting of unstable/impaired renal function.
@@ -4742,90 +4818,106 @@ Random vancomycin level is ${validLevel.toFixed(1)} mcg/mL (≥ 18 mcg/mL thresh
 3. Goal: Re-dose vancomycin only when random level is < 18 mcg/mL.
 4. Follow daily with AM random levels, SCr, and urine output; transition to scheduled dosing and DoseMeRx AUC monitoring once renal function stabilizes.`;
 
- document.getElementById('iventOutput').value = iventHold;
- } else {
- // LEVEL < 18 MCG/ML -> RE-DOSE BASED ON OVERRIDE OR < 24H (15 mg/kg) vs >= 24H (10 mg/kg)
- const isManualDoseOverride = doseOverride === 'force_15' || doseOverride === 'force_10';
- const mgPerKg = doseOverride === 'force_15'
- ? 15
- : doseOverride === 'force_10'
- ? 10
- : (isUnder24h ? 15 : 10);
- const rawReDose = hasWeight ? tbw * mgPerKg : null;
- const roundedReDose = hasWeight ? roundVancoDose(rawReDose, 2000) : null;
- const infusionMin = hasWeight ? getInfusionMinutes(roundedReDose) : null;
+        document.getElementById('iventOutput').value = iventHold;
+      } else {
+        // LEVEL < 18 MCG/ML -> RE-DOSE BASED ON OVERRIDE OR < 24H (15 mg/kg) vs >= 24H (10 mg/kg)
+        const isManualDoseOverride = doseOverride === 'force_15' || doseOverride === 'force_10';
+        const mgPerKg = doseOverride === 'force_15'
+          ? 15
+          : doseOverride === 'force_10'
+            ? 10
+            : (isUnder24h ? 15 : 10);
+        const rawReDose = hasWeight ? tbw * mgPerKg : null;
+        const roundedReDose = hasWeight ? roundVancoDose(rawReDose, 2000) : null;
+        const infusionMin = hasWeight ? getInfusionMinutes(roundedReDose) : null;
 
- recCard.className = 'bg-white rounded-2xl border-2 border-emerald-600 shadow-md overflow-hidden';
- document.getElementById('recStepTag').textContent = isManualDoseOverride
- ? `Step 3b-iii • Level < 18 • Clinical Override (${mgPerKg} mg/kg)`
- : isUnder24h
- ? 'Step 3b-iii • Level < 18 & Last Dose < 24h'
- : 'Step 3b-iii • Level < 18 & Last Dose ≥ 24h';
+        recCard.className = 'bg-white rounded-2xl border-2 border-emerald-600 shadow-md overflow-hidden';
+        document.getElementById('recStepTag').textContent = isManualDoseOverride
+          ? `Step 3b-iii • Level < 18 • Clinical Override (${mgPerKg} mg/kg)`
+          : isUnder24h
+            ? 'Step 3b-iii • Level < 18 & Last Dose < 24h'
+            : 'Step 3b-iii • Level < 18 & Last Dose ≥ 24h';
 
- if (hasWeight) {
- document.getElementById('recHeadline').textContent =
- `Re-Dose Vancomycin: ${roundedReDose.toLocaleString()} mg IV × 1 (${mgPerKg} mg/kg)`;
- document.getElementById('recInfusionTime').textContent = `Infuse over ${infusionMin} min`;
- document.getElementById('boxDosePrimary').textContent = `${roundedReDose.toLocaleString()} mg IV × 1`;
- document.getElementById('boxDoseSub').textContent = isManualDoseOverride
- ? `Clinical override (${mgPerKg} mg/kg; last dose ${elapsedHours.toFixed(1)} hrs before level) → ${mgPerKg} mg/kg × ${tbw} kg = ${Math.round(rawReDose)} mg (rounded to 250 mg).`
- : isUnder24h
- ? `Last dose was ${elapsedHours.toFixed(1)} hrs before level (< 24h) → 15 mg/kg × ${tbw} kg = ${Math.round(rawReDose)} mg (rounded to 250 mg).`
- : `Last dose was ${elapsedHours.toFixed(1)} hrs before level (≥ 24h) → 10 mg/kg × ${tbw} kg = ${Math.round(rawReDose)} mg (rounded to 250 mg).`;
- } else {
- document.getElementById('recHeadline').textContent =
- `Re-Dose Vancomycin at ${mgPerKg} mg/kg × 1 (Enter Weight for mg)`;
- document.getElementById('recInfusionTime').textContent = 'Enter weight';
- document.getElementById('boxDosePrimary').textContent = `${mgPerKg} mg/kg × 1`;
- document.getElementById('boxDoseSub').textContent = isManualDoseOverride
- ? `Clinical override selected (${mgPerKg} mg/kg × 1; last dose ${elapsedHours.toFixed(1)} hrs ago). Enter weight (kg) above for exact mg.`
- : `Last dose was ${elapsedHours.toFixed(1)} hrs before level (${isUnder24h ? '< 24h → 15 mg/kg' : '≥ 24h → 10 mg/kg'}). Enter weight (kg) above for exact mg.`;
- }
+        if (hasWeight) {
+          document.getElementById('recHeadline').textContent =
+            `Re-Dose Vancomycin: ${roundedReDose.toLocaleString()} mg IV × 1 (${mgPerKg} mg/kg)`;
+          document.getElementById('recInfusionTime').textContent = `Infuse over ${infusionMin} min`;
+          document.getElementById('boxDosePrimary').textContent = `${roundedReDose.toLocaleString()} mg IV × 1`;
+          document.getElementById('boxDoseSub').textContent = isManualDoseOverride
+            ? `Clinical override (${mgPerKg} mg/kg; last dose ${elapsedHours.toFixed(1)} hrs before level) → ${mgPerKg} mg/kg × ${tbw} kg = ${Math.round(rawReDose)} mg (rounded to 250 mg).`
+            : isUnder24h
+              ? `Last dose was ${elapsedHours.toFixed(1)} hrs before level (< 24h) → 15 mg/kg × ${tbw} kg = ${Math.round(rawReDose)} mg (rounded to 250 mg).`
+              : `Last dose was ${elapsedHours.toFixed(1)} hrs before level (≥ 24h) → 10 mg/kg × ${tbw} kg = ${Math.round(rawReDose)} mg (rounded to 250 mg).`;
+        } else {
+          document.getElementById('recHeadline').textContent =
+            `Re-Dose Vancomycin at ${mgPerKg} mg/kg × 1 (Enter Weight for mg)`;
+          document.getElementById('recInfusionTime').textContent = 'Enter weight';
+          document.getElementById('boxDosePrimary').textContent = `${mgPerKg} mg/kg × 1`;
+          document.getElementById('boxDoseSub').textContent = isManualDoseOverride
+            ? `Clinical override selected (${mgPerKg} mg/kg × 1; last dose ${elapsedHours.toFixed(1)} hrs ago). Enter weight (kg) above for exact mg.`
+            : `Last dose was ${elapsedHours.toFixed(1)} hrs before level (${isUnder24h ? '< 24h → 15 mg/kg' : '≥ 24h → 10 mg/kg'}). Enter weight (kg) above for exact mg.`;
+        }
 
- const nextLabText =
- followupNextLabMode === 'am_next'
- ? 'Random Level Next AM Labs'
- : `Timed Level in ${timedHours}h`;
- const nextLabSub =
- followupNextLabMode === 'am_next'
- ? 'Order Vancomycin, Random with morning labs tomorrow.'
- : `Order timed Vancomycin, Random level ${timedHours} hours post-dose.`;
+        let nextLabText = '';
+        let nextLabSub = '';
+        let iventLabPlan = '';
 
- document.getElementById('boxLabPrimary').textContent = nextLabText;
- document.getElementById('boxLabSub').textContent = nextLabSub;
+        if (!useTimedEveningLab) {
+          nextLabText = `Random Level w/ AM Labs (${formatFriendlyDate(nextMorningDt)})`;
+          nextLabSub = `Order Vancomycin, Random with morning labs tomorrow (~05:30 on ${formatFriendlyDate(nextMorningDt)}).`;
+          iventLabPlan = `Check repeat Vancomycin, Random level with AM labs tomorrow morning (${formatFriendlyDate(nextMorningDt)}).`;
+        } else if (timedHours !== null) {
+          const timingReason = isManualTimedOverride
+            ? `Manually selected ${timedHours}-hour timed level`
+            : `Re-dose given after 17:00–05:00 (${formatFriendlyTime(redoseStartDt)}): CrCl is ${crclRounded} mL/min (${crclRounded >= 40 ? '≥ 40' : '< 40'} mL/min)`;
+          const iventReason = isManualTimedOverride
+            ? `based on clinical assessment`
+            : `based on CrCl ${crclRounded} mL/min`;
+          nextLabText = `Timed Random Level in ${timedHours}h (${formatFriendlyDate(timedLabDt)} ${formatFriendlyTime(timedLabDt)})`;
+          nextLabSub = `${timingReason} — draw timed level ${timedHours} hours post-dose on ${formatFriendlyDate(timedLabDt)} at ${formatFriendlyTime(timedLabDt)}.`;
+          iventLabPlan = `Check timed Vancomycin, Random level ${timedHours} hours post-dose on ${formatFriendlyDate(timedLabDt)} at ${formatFriendlyTime(timedLabDt)} (${iventReason}).`;
+        } else {
+          nextLabText = 'Timed Random Level (12h or 24h)';
+          nextLabSub = `Re-dose given after 17:00 up until 05:00 (${formatFriendlyTime(redoseStartDt)}): order a timed level at 12 hours or 24 hours post-dose (enter Age, Height, Sex, and SCr to auto-select 12h vs. 24h by CrCl, or select manually above).`;
+          iventLabPlan = `Re-dose administered after 17:00–05:00 (${formatFriendlyTime(redoseStartDt)}); check timed Vancomycin, Random level in 12 hours or 24 hours post-dose (12h if CrCl ≥ 40 mL/min; 24h if CrCl < 40 mL/min).`;
+        }
 
- document.getElementById('boxOngoingPrimary').textContent = 'Daily AM Monitoring';
- document.getElementById('boxOngoingSub').textContent =
- 'Continue daily random levels with AM labs. Transition to scheduled dosing & DoseMeRx once SCr/UOP stabilizes.';
+        document.getElementById('boxLabPrimary').textContent = nextLabText;
+        document.getElementById('boxLabSub').textContent = nextLabSub;
 
- const dosePhrase = hasWeight
- ? `${roundedReDose.toLocaleString()} mg IV over ${infusionMin} min`
- : `${mgPerKg} mg/kg IV × 1`;
+        document.getElementById('boxOngoingPrimary').textContent = 'Daily AM Monitoring';
+        document.getElementById('boxOngoingSub').textContent =
+          'Continue daily random levels with AM labs. Transition to scheduled dosing & DoseMeRx once SCr/UOP stabilizes.';
 
- document.getElementById('rationaleTitle').textContent = isManualDoseOverride
- ? `Clinical Override Selected (Last Dose ${elapsedHours.toFixed(1)} hrs Ago) → ${mgPerKg} mg/kg × 1`
- : isUnder24h
- ? `Last Dose < 24 Hours Before Level (${elapsedHours.toFixed(1)} hrs) → 15 mg/kg × 1`
- : `Last Dose ≥ 24 Hours Before Level (${elapsedHours.toFixed(1)} hrs) → 10 mg/kg × 1`;
+        const dosePhrase = hasWeight
+          ? `${roundedReDose.toLocaleString()} mg IV over ${infusionMin} min`
+          : `${mgPerKg} mg/kg IV × 1`;
 
- document.getElementById('rationaleBody').textContent = isManualDoseOverride
- ? `Random level is ${validLevel.toFixed(1)} mcg/mL (< 18 mcg/mL), drawn ${elapsedHours.toFixed(1)} hours after the prior dose (${isUnder24h ? '< 24h' : '≥ 24h'}). Per your clinical override, re-dose vancomycin at ${mgPerKg} mg/kg × 1 (${dosePhrase}) and check next random level per selected schedule.`
- : isUnder24h
- ? `Random level is ${validLevel.toFixed(1)} mcg/mL (< 18 mcg/mL), drawn ${elapsedHours.toFixed(1)} hours after the prior dose (< 24 hours). Per PSH Step 3b guidance, re-dose vancomycin at 15 mg/kg × 1 (${dosePhrase}) and check next random level with AM labs.`
- : `Random level is ${validLevel.toFixed(1)} mcg/mL (< 18 mcg/mL), drawn ${elapsedHours.toFixed(1)} hours after the prior dose (≥ 24 hours). Per PSH Step 3b guidance, re-dose vancomycin at 10 mg/kg × 1 (${dosePhrase}) and check next random level with AM labs.`;
+        const timingRationaleSuffix = !useTimedEveningLab
+          ? `Re-dose starts at ${formatFriendlyTime(redoseStartDt)} (daytime window); check next random level with next morning AM labs (~05:30 on ${formatFriendlyDate(nextMorningDt)}).`
+          : isManualTimedOverride
+            ? `Per your manual selection, check a timed Vancomycin, Random level ${timedHours} hours post-dose on ${formatFriendlyDate(timedLabDt)} at ${formatFriendlyTime(timedLabDt)}.`
+            : `Because the re-dose starts at ${formatFriendlyTime(redoseStartDt)} (after 17:00 up until 05:00), it does not default to AM labs — order a timed level at ${hasCrCl ? `${timedHours} hours on ${formatFriendlyDate(timedLabDt)} at ${formatFriendlyTime(timedLabDt)} (${crclRounded >= 40 ? 'CrCl ≥ 40 mL/min → 12h' : 'CrCl < 40 mL/min → 24h'})` : '12 hours or 24 hours post-dose (enter renal parameters to auto-select 12h for CrCl ≥ 40 mL/min vs. 24h for CrCl < 40 mL/min)'}.`;
 
- const iventLabPlan =
- followupNextLabMode === 'am_next'
- ? 'Check repeat Vancomycin, Random level with AM labs tomorrow morning.'
- : `Check timed Vancomycin, Random level ${timedHours} hours post-dose.`;
+        document.getElementById('rationaleTitle').textContent = isManualDoseOverride
+          ? `Clinical Override Selected (Last Dose ${elapsedHours.toFixed(1)} hrs Ago) → ${mgPerKg} mg/kg × 1`
+          : isUnder24h
+            ? `Last Dose < 24 Hours Before Level (${elapsedHours.toFixed(1)} hrs) → 15 mg/kg × 1`
+            : `Last Dose ≥ 24 Hours Before Level (${elapsedHours.toFixed(1)} hrs) → 10 mg/kg × 1`;
 
- const iventDoseDisplay = hasWeight ? `${roundedReDose.toLocaleString()} mg` : '*** mg';
- const iventInfDisplay = hasWeight ? `${infusionMin} minutes` : '*** minutes';
- const iventDoseRationale = isManualDoseOverride
- ? `${mgPerKg} mg/kg per clinical assessment; rounded to nearest 250 mg`
- : `${mgPerKg} mg/kg; rounded to nearest 250 mg`;
+        document.getElementById('rationaleBody').textContent = isManualDoseOverride
+          ? `Random level is ${validLevel.toFixed(1)} mcg/mL (< 18 mcg/mL), drawn ${elapsedHours.toFixed(1)} hours after the prior dose (${isUnder24h ? '< 24h' : '≥ 24h'}). Per your clinical override, re-dose vancomycin at ${mgPerKg} mg/kg × 1 (${dosePhrase}). ${timingRationaleSuffix}`
+          : isUnder24h
+            ? `Random level is ${validLevel.toFixed(1)} mcg/mL (< 18 mcg/mL), drawn ${elapsedHours.toFixed(1)} hours after the prior dose (< 24 hours). Per PSH Step 3b guidance, re-dose vancomycin at 15 mg/kg × 1 (${dosePhrase}). ${timingRationaleSuffix}`
+            : `Random level is ${validLevel.toFixed(1)} mcg/mL (< 18 mcg/mL), drawn ${elapsedHours.toFixed(1)} hours after the prior dose (≥ 24 hours). Per PSH Step 3b guidance, re-dose vancomycin at 10 mg/kg × 1 (${dosePhrase}). ${timingRationaleSuffix}`;
 
- const iventRedose = `PSH RX Vancomycin Monitoring (Dose by Level)
+        const iventDoseDisplay = hasWeight ? `${roundedReDose.toLocaleString()} mg` : '*** mg';
+        const iventInfDisplay = hasWeight ? `${infusionMin} minutes` : '*** minutes';
+        const iventDoseRationale = isManualDoseOverride
+          ? `${mgPerKg} mg/kg per clinical assessment; rounded to nearest 250 mg`
+          : `${mgPerKg} mg/kg; rounded to nearest 250 mg`;
+
+        const iventRedose = `PSH RX Vancomycin Monitoring (Dose by Level)
 
 Assessment / Plan:
 Random vancomycin level is ${validLevel.toFixed(1)} mcg/mL (< 18 mcg/mL), obtained ${elapsedHours.toFixed(1)} hours after the last dose (${isUnder24h ? '< 24 hours' : '≥ 24 hours'}).
@@ -4834,29 +4926,29 @@ Random vancomycin level is ${validLevel.toFixed(1)} mcg/mL (< 18 mcg/mL), obtain
 3. Goal: Re-dose vancomycin when random level is < 18 mcg/mL.
 4. Follow daily with AM random levels, SCr, and urine output; transition to scheduled dosing and DoseMeRx AUC monitoring once renal function stabilizes.`;
 
- document.getElementById('iventOutput').value = iventRedose;
- }
- }
+        document.getElementById('iventOutput').value = iventRedose;
+      }
+    }
 
- function copyIventToClipboard() {
- const textarea = document.getElementById('iventOutput');
- textarea.select();
- textarea.setSelectionRange(0, 99999);
- try {
- document.execCommand('copy');
- const feedback = document.getElementById('copyFeedback');
- const btnText = document.getElementById('copyBtnText');
- feedback.classList.remove('hidden');
- btnText.textContent = 'Copied!';
- setTimeout(() => {
- feedback.classList.add('hidden');
- btnText.textContent = 'Copy i-Vent Note';
- }, 2500);
- } catch (err) {
- // Fallback selection stays highlighted
- }
- }
- </script>
+    function copyIventToClipboard() {
+      const textarea = document.getElementById('iventOutput');
+      textarea.select();
+      textarea.setSelectionRange(0, 99999);
+      try {
+        document.execCommand('copy');
+        const feedback = document.getElementById('copyFeedback');
+        const btnText = document.getElementById('copyBtnText');
+        feedback.classList.remove('hidden');
+        btnText.textContent = 'Copied!';
+        setTimeout(() => {
+          feedback.classList.add('hidden');
+          btnText.textContent = 'Copy i-Vent Note';
+        }, 2500);
+      } catch (err) {
+        // Fallback selection stays highlighted
+      }
+    }
+  </script>
 </body>
 </html></template>
 
